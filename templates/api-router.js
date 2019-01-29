@@ -1,3 +1,5 @@
+'use strict';
+
 const getRouterMethod = (method, path) => {
     return `
 router.${method}('${path}', function (req, res) {

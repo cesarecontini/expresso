@@ -70,16 +70,20 @@ const initProject = (program) => {
         })
         .then(() => console.log(chalkPipe('orange.bold')('Created index.js... ')))
 
-        .then(() => fs.writeFile(`${projectDirName}/package.json`, packageJsonString({})))
+        .then(() => fs.writeFile(`${projectDirName}/package.json`, packageJsonString({
+            dbDialect: program.dbDialect
+        })))
         .then(() => console.log(chalkPipe('orange.bold')('Created package.json file ')))
 
         .then(() => {
             return Promise.all([
                 fs.writeFile(`${projectDirName}/settings-prod.js`, settingsString({
-                    port: program.port
+                    port: program.port,
+                    dbDialect: program.dbDialect
                 })),
                 fs.writeFile(`${projectDirName}/settings.js`, settingsString({
-                    port: program.port
+                    port: program.port,
+                    dbDialect: program.dbDialect
                 }))
             ]);
         })
@@ -106,8 +110,7 @@ program.version('0.1.0')
     .option('-i, --init [projectname]', 'Creates a project named [projectname]', 'my-app')
     .option('-p, --port [port]', 'Set the port project is running on [port]', 3000)
     .option('-o, --overwrite', 'Overwrite project if already existing')
-    .option('-dbd, --dbDialect', 'Enter the database you would like to use: postgre, mariadb or mysql')
-    .option('-dbconn, --dbConnectionString', 'Enter the the database full connection string')
+    .option('-dbd, --dbDialect [dbDialect]', 'Enter the database [dbDialect] you would like to use: postgres, sqlite, mssql or mysql', 'postgres')
     .option('-l, --list <apiEndpoints>', 'A list of api properties, comma-separated', list)
     .parse(process.argv);
 

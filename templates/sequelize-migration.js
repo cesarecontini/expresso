@@ -1,3 +1,4 @@
+'use strict';
 const capitalize = require('capitalize');
 const pluralize = require('pluralize');
 
