@@ -1,9 +1,12 @@
+'use strict';
+
 module.exports = (opts) => {
-return `
+
+    return `
 module.exports = {
     port: ${opts.port},
     dbDialect: ${opts.dbDialect || '\'\''},
     dbConnectionString: ${opts.dbConnectionString || '\'\''},
 }    
-`; 
-} 
+`;
+}

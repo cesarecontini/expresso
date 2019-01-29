@@ -1,3 +1,5 @@
+'use strict';
+
 const capitalize = require('capitalize');
 
 const requireRouterModules = (routers) => {
@@ -13,9 +15,12 @@ const addRouterModules = (routers) => {
 module.exports = (opts) => {
     return `
 const settings = require('./settings');
+const helmet = require('helmet');
 const express = require('express');
 const app = express();
 const port = settings.port;
+
+app.use(helmet())
 
 ${requireRouterModules(opts.routersList)}
 
