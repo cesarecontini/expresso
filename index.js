@@ -69,7 +69,6 @@ program.version('0.1.0')
     .option('-o, --overwrite', 'Overwrite project if already existing')
     .option('-dbd, --dbDialect', 'Enter the database you would like to use: postgre, mariadb or mysql')
     .option('-dbconn, --dbConnectionString', 'Enter the the database full connection string')
-    .option('-o, --overwrite', 'Overwrite project if already existing')
     .option('-l, --list <apiEndpoints>', 'A list of api properties, comma-separated', list)
     .parse(process.argv);
 
