@@ -4,7 +4,7 @@ const getRouterMethod = (method, path) => {
     return `
 router.${method}('${path}', function (req, res) {
     res.json({});
-})`;
+});`;
 };
 
 module.exports = (opts) => {

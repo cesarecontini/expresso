@@ -20,12 +20,12 @@ const express = require('express');
 const app = express();
 const port = settings.port;
 
-app.use(helmet())
+app.use(helmet());
 
 ${requireRouterModules(opts.routersList)}
 
 ${addRouterModules(opts.routersList)}
 
-app.listen(port, () => console.log('Example app listening on \${port}', port));
+app.listen(port, () => console.log('Example app listening on port', port));
 `;
 }

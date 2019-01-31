@@ -12,6 +12,7 @@ const apiRouterString = require('./templates/api-router');
 const settingsString = require('./templates/settings');
 const sequelizeModelString = require('./templates/sequelize-model');
 const sequelizeMigrationString = require('./templates/sequelize-migration');
+const sequelizeSeedString = require('./templates/sequelize-seed');
 
 const list = (val) => {
     if (!val) return [];
@@ -36,7 +37,7 @@ const addApiEndpoints = (program) => {
         });
 };
 
-const addSequelizeFiles = (program, targetDirPath, fileTemplateStringFn, isMigrationFile) => {
+const addSequelizeFiles = (program, targetDirPath, fileTemplateStringFn, isFilenameWithTimestampSuffix) => {
     const targetDir = `./${program.init}${targetDirPath}`;
     let promisesArray = [];
     let fileTimestamp = 20190129105640;
@@ -44,8 +45,9 @@ const addSequelizeFiles = (program, targetDirPath, fileTemplateStringFn, isMigra
     program.list.forEach(modelName => {
         let singularModelName = pluralize.singular(modelName);
         let fileName = pluralize.singular(modelName);
-        if (isMigrationFile) {
-            fileName = `${(20190129105640 + (i * 100))}-create-${fileName}`;
+        if (isFilenameWithTimestampSuffix) {
+            const fileNameSuffix = (targetDirPath === '/db/migrations' ? `create-${fileName}` : `${fileName}-data`)
+            fileName = `${(20190129105640 + (i * 100))}-${fileNameSuffix}`;
         }
 
         promisesArray.push(
@@ -71,7 +73,8 @@ const initProject = (program) => {
         .then(() => console.log(chalkPipe('orange.bold')('Created index.js... ')))
 
         .then(() => fs.writeFile(`${projectDirName}/package.json`, packageJsonString({
-            dbDialect: program.dbDialect
+            dbDialect: program.dbDialect,
+            appName: program.init
         })))
         .then(() => console.log(chalkPipe('orange.bold')('Created package.json file ')))
 
@@ -97,8 +100,14 @@ const initProject = (program) => {
         .then(() => addSequelizeFiles(program, '/db/models', sequelizeModelString, false))
         .then(() => console.log(chalkPipe('orange.bold')('Created model files')))
 
+        .then(() => addSequelizeFiles(program, '/db/seeders', sequelizeSeedString, true))
+        .then(() => console.log(chalkPipe('orange.bold')('Created seeder files')))
+
         .then(() => addSequelizeFiles(program, '/db/migrations', sequelizeMigrationString, true))
         .then(() => console.log(chalkPipe('orange.bold')('Created migration files')))
+
+        .then(() => fs.copy('./services', `${projectDirName}/services`))
+        .then(() => console.log(chalkPipe('orange.bold')('Created services folder ')))
 
         .then(() => fs.copy('.sequelizerc', `${projectDirName}/.sequelizerc`))
         .then(() => console.log(chalkPipe('orange.bold')('Created .sequelizerc file')))

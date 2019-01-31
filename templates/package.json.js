@@ -21,7 +21,7 @@ module.exports = (opts) => {
 
     return `
 {
-    "name": "cli-app-test",
+    "name": "${opts.appName}",
     "version": "1.0.0",
     "description": "",
     "main": "index.js",
