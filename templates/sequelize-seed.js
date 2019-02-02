@@ -13,7 +13,9 @@ module.exports = (opts) => {
 module.exports = {
     up: (queryInterface, Sequelize) => {
         return queryInterface.bulkInsert('${pluralModel}', [{
-            name: 'a ${singularModel} data test record'
+            name: 'a ${singularModel} data test record',
+            createdAt : new Date(),
+            updatedAt : new Date()
         }], {});
     },
 

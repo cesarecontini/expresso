@@ -27,7 +27,12 @@ module.exports = (opts) => {
     "main": "index.js",
     "scripts": {
         "test": "echo \\"Error: no test specified\\" && exit 1",
-        "init": "npm install"
+        "start": "nodemon -e js,html,css ./index.js",
+        "dockerbuild": "docker-compose build",
+        "dockerup": "docker-compose up",
+        "migrate": "docker exec -it ${opts.appName}_web_1 ./node_modules/.bin/sequelize db:migrate",
+        "seed": "docker exec -it ${opts.appName}_web_1 ./node_modules/.bin/sequelize db:seed:all",
+        "init": "npm install && npm-run-all dockerbuild -p dockerup -s migrate seed"
     },
     "author": "",
     "license": "ISC",
@@ -41,6 +46,10 @@ module.exports = (opts) => {
         "rmdir": "^1.2.0",
         "sequelize": "^4.42.0",
         "sequelize-cli": "^5.4.0"
+    },
+    "devDependencies": {
+        "nodemon": "^1.18.9",
+        "npm-run-all": "^4.1.5"
     }
 }
     `;

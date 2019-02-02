@@ -7,7 +7,9 @@ module.exports = {
             lastName: 'Bond',
             email: 'jamesbond@somedomain.com',
             password: 'password',
-            token: 'token'
+            token: 'token',
+            createdAt : new Date(),
+            updatedAt : new Date()
         }], {});
     },
 
