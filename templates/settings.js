@@ -9,7 +9,8 @@ module.exports = {
     dbConnectionString: process.env.DATABASE_URL,
 
     recordsPerPage: 50,
-    excludedAttributes: ['createdAt', 'updatedAt', 'token', 'password']
+    excludedAttributes: ['createdAt', 'updatedAt'],
+    excludedUserAttributes: ['createdAt', 'updatedAt', 'token', 'password']
 }    
 `;
 }

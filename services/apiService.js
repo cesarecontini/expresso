@@ -4,6 +4,7 @@ const sequelize = require('../db/models');
 const settings = require('../settings');
 
 const getSequelizeModel = (sequelizeModel) => sequelize[sequelizeModel];
+const getOffset = (limit, page) => limit * (page - 1); 
 
 module.exports = {
     findAllAndPaginate: (req, sequelizeModel) => {
@@ -14,9 +15,10 @@ module.exports = {
                 .then((data) => {
                 let page = (req.query.page) ? req.query.page : 0; // page number
                 let pages = Math.ceil(data.count / limit);
-                offset = limit * (page - 1);
-                getSequelizeModel(sequelizeModel).findAll({
-                        attributes: settings.excludedAttributes,
+                const offsetValue = getOffset(limit, page);
+                offset = (offsetValue < 0) ? 0 : offsetValue;
+                return getSequelizeModel(sequelizeModel).findAll({
+                        attributes: {exclude: settings.excludedAttributes},
                         limit: limit,
                         offset: offset,
                         $sort: {

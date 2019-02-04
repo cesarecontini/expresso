@@ -12,7 +12,7 @@ services:
         build: .
         volumes: 
             - ".:/src"
-        command: npm start
+        command: npm run npminstall-and-start
         container_name: ${opts.projectName}_web_1
         ports:
             - "${opts.port}:3000"
@@ -43,7 +43,7 @@ services:
         build: .
         volumes: 
             - ".:/src"
-        command: npm start
+        command: npm run npminstall-and-start
         container_name: ${opts.projectName}_web_1
         ports:
             - "${opts.port}:3000"

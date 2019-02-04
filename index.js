@@ -33,8 +33,11 @@ const addApiEndpoints = (program) => {
             let promisesArray = [];
             program.list.forEach(propertyName => {
                 const plural = pluralize.plural(propertyName);
+                const singular = pluralize.singular(propertyName);
                 promisesArray.push(
-                    fs.writeFile(`${routersDir}/route-${plural}.js`, apiRouterString({}))
+                    fs.writeFile(`${routersDir}/route-${plural}.js`, apiRouterString({
+                        modelSingularName: singular
+                    }))
                 );
             });
             return Promise.all(promisesArray);

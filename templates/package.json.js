@@ -30,9 +30,13 @@ module.exports = (opts) => {
         "start": "nodemon -e js,html,css ./index.js",
         "dockerbuild": "docker-compose build",
         "dockerup": "docker-compose up",
+        "erase-db": "docker exec -it ${opts.appName}_web_1 ./node_modules/.bin/sequelize db:migrate:undo:all",
         "migrate": "docker exec -it ${opts.appName}_web_1 ./node_modules/.bin/sequelize db:migrate",
         "seed": "docker exec -it ${opts.appName}_web_1 ./node_modules/.bin/sequelize db:seed:all",
-        "init": "npm install && npm-run-all dockerbuild -p dockerup -s migrate seed"
+        "npminstall-and-start": "npm install && npm start",
+        "init": "docker-compose build && docker-compose up",
+        "init-db": "npm-run-all migrate seed",
+        "reset-db": "npm-run-all erase-db migrate seed"
     },
     "author": "",
     "license": "ISC",
