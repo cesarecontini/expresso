@@ -24,6 +24,7 @@
     "expresso": "bin/expresso"
   },
   "dependencies": {
+    "body-parser": "^1.18.3",
     "capitalize": "^2.0.0",
     "chalk-pipe": "^2.0.0",
     "commander": "^2.19.0",

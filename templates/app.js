@@ -16,11 +16,16 @@ module.exports = (opts) => {
     return `
 const settings = require('./settings');
 const helmet = require('helmet');
+const bodyParser = require('body-parser');
 const express = require('express');
 const app = express();
 const port = settings.port;
 
 app.use(helmet());
+app.use( bodyParser.json() );     
+app.use( bodyParser.urlencoded({
+    extended: true
+})); 
 
 ${requireRouterModules(opts.routersList)}
 

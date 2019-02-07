@@ -2,21 +2,6 @@
 
 const capitalize = require('capitalize');
 
-const findAllAndPaginateImpl = (modelSingularName) => {
-return `
-    apiServices.findAllAndPaginate(req, '${capitalize(modelSingularName)}')
-        .then(recs => res.json(recs))
-        .catch(e => res.status(500).send(e.message));    
-`;
-};
-
-const getRouterMethod = (method, path, impl = 'res.json({});') => {
-    return `
-router.${method}('${path}', function (req, res) {
-    ${impl}
-});`;
-};
-
 module.exports = (opts) => {
     return `
 const express = require('express');
@@ -29,11 +14,37 @@ router.use(function timeLog(req, res, next) {
     next();
 });
 
-${getRouterMethod('get', '/', findAllAndPaginateImpl(opts.modelSingularName))}
-${getRouterMethod('get', '/:id')}
-${getRouterMethod('post', '/')}
-${getRouterMethod('put', '/:id')}
-${getRouterMethod('delete', '/:id')}
+router.get('/', function (req, res) {
+    apiServices.findAllAndPaginate(req.query.page, '${opts.modelSingularName}')
+        .then(recs => res.json(recs))
+        .catch(e => res.status(500).send(e.message));    
+});
+
+router.get('/:id', function (req, res) {
+    apiServices.findOne(req.params.id, '${opts.modelSingularName}')
+        .then(rec => { 
+            if(!rec) return res.status(404).send({});
+            res.json(rec);
+        })
+        .catch(e => res.status(500).send(e.message));    
+});
+
+router.post('/', function (req, res) {
+    apiServices.createOne(req.body.${opts.modelSingularName.toLowerCase()}, '${opts.modelSingularName}')
+        .then(rec => { 
+            if(!rec) return res.status(404).send({});
+            res.json(rec);
+        })
+        .catch(e => res.status(500).send(e.message));  
+});
+
+router.put('/:id', function (req, res) {
+    res.json({});
+});
+
+router.delete('/:id', function (req, res) {
+    res.json({});
+});
 
 module.exports = router;
 `;

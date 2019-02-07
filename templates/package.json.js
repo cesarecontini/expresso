@@ -42,6 +42,7 @@ module.exports = (opts) => {
     "license": "ISC",
     "dependencies": {
         ${dbDependencies}
+        "body-parser": "^1.18.3",
         "chalk-pipe": "^2.0.0",
         "commander": "^2.19.0",
         "express": "^4.16.4",
