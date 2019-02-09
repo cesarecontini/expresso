@@ -50,7 +50,8 @@ module.exports = (opts) => {
         "helmet": "^3.15.0",
         "rmdir": "^1.2.0",
         "sequelize": "^4.42.0",
-        "sequelize-cli": "^5.4.0"
+        "sequelize-cli": "^5.4.0",
+        "validate": "^4.5.1"
     },
     "devDependencies": {
         "nodemon": "^1.18.9",

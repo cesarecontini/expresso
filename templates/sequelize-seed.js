@@ -4,8 +4,8 @@ const pluralize = require('pluralize');
 
 module.exports = (opts) => {
 
-    const pluralModel = capitalize(pluralize.plural(opts.modelName));
-    const singularModel = capitalize(pluralize.singular(opts.modelName));
+const pluralModel = capitalize(pluralize.plural(opts.modelName));
+const singularModel = capitalize(pluralize.singular(opts.modelName));
 
     return `
 'use strict';

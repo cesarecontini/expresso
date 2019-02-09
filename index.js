@@ -6,6 +6,7 @@ const fs = require('fs-extra');
 const rmdir = require('rmdir');
 const pluralize = require('pluralize');
 const validator = require('validator');
+const Listr = require('listr');
 
 const appString = require('./templates/app');
 const packageJsonString = require('./templates/package.json');
@@ -69,72 +70,86 @@ const addSequelizeFiles = (program, targetDirPath, fileTemplateStringFn, isFilen
 
 const initProject = (program) => {
     const projectDirName = `./${program.init}`;
-    fs.mkdir(program.init)
-        .then(() => {
-            console.log(chalkPipe('orange.bold')('Created directory ', projectDirName));
-            return fs.writeFile(`${projectDirName}/index.js`, appString({
+
+    const tasks = new Listr([
+        {
+            title: 'Create project directory',
+            task: () => fs.mkdir(program.init)
+        },
+        {
+            title: 'Create index.js main file',
+            task: () => {
+                return fs.writeFile(`${projectDirName}/index.js`, appString({
+                    port: program.port,
+                    routersList: program.list.map(l => pluralize.plural(l))
+                }));
+            }
+        },
+        {
+            title: 'Create package.json file',
+            task: () => fs.writeFile(`${projectDirName}/package.json`, packageJsonString({
+                dbDialect: program.dbDialect,
+                appName: program.init
+            }))
+        },
+        {
+            title: 'Create settings.js file',
+            task: () => fs.writeFile(`${projectDirName}/settings.js`, settingsString({
                 port: program.port,
-                routersList: program.list.map(l => pluralize.plural(l))
-            }));
-        })
-        .then(() => console.log(chalkPipe('orange.bold')('Created index.js... ')))
+                dbDialect: program.dbDialect
+            }))
+        },
+        {
+            title: 'Create router files',
+            task: () => addApiEndpoints(program)
+        },
+        {
+            title: 'Create sequelize folder',
+            task: () => fs.copy('./db', `${projectDirName}/db`)
+        },
+        {
+            title: 'Create model files',
+            task: () => addSequelizeFiles(program, '/db/models', sequelizeModelString, false)
+        },
+        {
+            title: 'Create seeder files',
+            task: () => addSequelizeFiles(program, '/db/seeders', sequelizeSeedString, true)
+        },
+        {
+            title: 'Create seeder files',
+            task: () => addSequelizeFiles(program, '/db/migrations', sequelizeMigrationString, true)
+        },
+        {
+            title: 'Create sequelize custom config.json file',
+            task: () => fs.writeFile(`${projectDirName}/db/config.json`, sequelizeConfigJsonString({dbDialect: program.dbDialect}))
+        },
+        {
+            title: 'Create .sequelizerc file',
+            task: () => fs.copy('.sequelizerc', `${projectDirName}/.sequelizerc`)
+        },
+        {
+            title: 'Create services folder',
+            task: () => fs.copy('./services', `${projectDirName}/services`)
+        },
+        {
+            title: 'Create Dockerfile',
+            task: () => fs.writeFile(`${projectDirName}/Dockerfile`, dockerString({}))
+        },
+        {
+            title: 'Create docker-compose.yml file',
+            task: () => fs.writeFile(`${projectDirName}/docker-compose.yml`, dockerComposeString({
+                port: program.port,
+                dbPort: program.dbport,
+                dbDialect: program.dbDialect,
+                projectName: program.init
+            }))
+        }
+    ]);
 
-        .then(() => fs.writeFile(`${projectDirName}/package.json`, packageJsonString({
-            dbDialect: program.dbDialect,
-            appName: program.init
-        })))
-        .then(() => console.log(chalkPipe('orange.bold')('Created package.json file ')))
-
-        .then(() => {
-            return Promise.all([
-                fs.writeFile(`${projectDirName}/settings-prod.js`, settingsString({
-                    port: program.port,
-                    dbDialect: program.dbDialect
-                })),
-                fs.writeFile(`${projectDirName}/settings.js`, settingsString({
-                    port: program.port,
-                    dbDialect: program.dbDialect
-                }))
-            ]);
-        })
-
-        .then(() => addApiEndpoints(program))
-        .then(() => console.log(chalkPipe('orange.bold')('Created router files')))
-
-        .then(() => fs.copy('./db', `${projectDirName}/db`))
-        .then(() => console.log(chalkPipe('orange.bold')('Created sequelize folder')))
-
-        .then(() => addSequelizeFiles(program, '/db/models', sequelizeModelString, false))
-        .then(() => console.log(chalkPipe('orange.bold')('Created model files')))
-
-        .then(() => addSequelizeFiles(program, '/db/seeders', sequelizeSeedString, true))
-        .then(() => console.log(chalkPipe('orange.bold')('Created seeder files')))
-
-        .then(() => addSequelizeFiles(program, '/db/migrations', sequelizeMigrationString, true))
-        .then(() => console.log(chalkPipe('orange.bold')('Created migration files')))
-
-        .then(() => fs.writeFile(`${projectDirName}/db/config.json`, sequelizeConfigJsonString({dbDialect: program.dbDialect})))
-        .then(() => console.log(chalkPipe('orange.bold')('Created sequelize custom config.json file')))
-
-        .then(() => fs.copy('./services', `${projectDirName}/services`))
-        .then(() => console.log(chalkPipe('orange.bold')('Created services folder ')))
-
-        .then(() => fs.copy('.sequelizerc', `${projectDirName}/.sequelizerc`))
-        .then(() => console.log(chalkPipe('orange.bold')('Created .sequelizerc file')))
-
-        .then(() => fs.writeFile(`${projectDirName}/Dockerfile`, dockerString({})))
-        .then(() => console.log(chalkPipe('orange.bold')('Created Dockerfile')))
-
-        .then(() => fs.writeFile(`${projectDirName}/docker-compose.yml`, dockerComposeString({
-            port: program.port,
-            dbPort: program.dbport,
-            dbDialect: program.dbDialect,
-            projectName: program.init
-        })))
-        .then(() => console.log(chalkPipe('orange.bold')('Created docker-compose.yml file ')))
-
-
+    tasks
+        .run()
         .catch(e => console.log(chalkPipe('bgRed.#cccccc')('ERROR!!', e.message)));
+
 };
 
 program.version('0.1.0')
