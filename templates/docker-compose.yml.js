@@ -17,8 +17,9 @@ services:
         ports:
             - "${opts.port}:3000"
         environment: 
-            DATABASE_URL: mysql://mysql:password@db:3306/mysql
             NODE_ENV: development
+            DATABASE_URL: mysql://mysql:password@db:3306/mysql
+            JWT_SECRET: jwtsecret
     db:
         image: mysql
         command: --default-authentication-plugin=mysql_native_password
@@ -48,8 +49,9 @@ services:
         ports:
             - "${opts.port}:3000"
         environment: 
-            DATABASE_URL: postgres://postgres:password@db:5432/postgres
             NODE_ENV: development
+            DATABASE_URL: postgres://postgres:password@db:5432/postgres
+            JWT_SECRET: jwtsecret
     db:
         image: postgres
         restart: always

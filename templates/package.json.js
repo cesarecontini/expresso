@@ -42,12 +42,16 @@ module.exports = (opts) => {
     "license": "ISC",
     "dependencies": {
         ${dbDependencies}
+        "bcrypt": "^3.0.4",
         "body-parser": "^1.18.3",
         "chalk-pipe": "^2.0.0",
         "commander": "^2.19.0",
         "express": "^4.16.4",
         "fs-extra": "^7.0.1",
         "helmet": "^3.15.0",
+        "jsonwebtoken": "^8.4.0",
+        "passport": "^0.4.0",
+        "passport-jwt": "^4.0.0",
         "rmdir": "^1.2.0",
         "sequelize": "^4.42.0",
         "sequelize-cli": "^5.4.0",
