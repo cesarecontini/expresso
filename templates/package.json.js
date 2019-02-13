@@ -28,12 +28,13 @@ module.exports = (opts) => {
     "scripts": {
         "test": "echo \\"Error: no test specified\\" && exit 1",
         "start": "nodemon -e js,html,css ./index.js",
+        "debug": "nodemon --inspect=0.0.0.0:9229 -e js,html,css ./index.js",
         "dockerbuild": "docker-compose build",
         "dockerup": "docker-compose up",
         "erase-db": "docker exec -it ${opts.appName}_web_1 ./node_modules/.bin/sequelize db:migrate:undo:all",
         "migrate": "docker exec -it ${opts.appName}_web_1 ./node_modules/.bin/sequelize db:migrate",
         "seed": "docker exec -it ${opts.appName}_web_1 ./node_modules/.bin/sequelize db:seed:all",
-        "npminstall-and-start": "npm install && npm start",
+        "npminstall-and-start": "npm install && npm debug",
         "init": "docker-compose build && docker-compose up",
         "init-db": "npm-run-all migrate seed",
         "reset-db": "npm-run-all erase-db migrate seed"
@@ -42,7 +43,7 @@ module.exports = (opts) => {
     "license": "ISC",
     "dependencies": {
         ${dbDependencies}
-        "bcrypt": "^3.0.4",
+        "bcryptjs": "^2.4.3",
         "body-parser": "^1.18.3",
         "chalk-pipe": "^2.0.0",
         "commander": "^2.19.0",

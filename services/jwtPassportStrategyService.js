@@ -10,7 +10,7 @@ const opts = {
 };
 
 module.exports = new JwtStrategy(opts, (jwt_payload, done) => {
-    User.findOne({
+    sequelize.User.findOne({
         where: {
             email: email
         },

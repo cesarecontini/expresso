@@ -71,8 +71,7 @@ const addSequelizeFiles = (program, targetDirPath, fileTemplateStringFn, isFilen
 const initProject = (program) => {
     const projectDirName = `./${program.init}`;
 
-    const tasks = new Listr([
-        {
+    const tasks = new Listr([{
             title: 'Create project directory',
             task: () => fs.mkdir(program.init)
         },
@@ -104,6 +103,10 @@ const initProject = (program) => {
             task: () => addApiEndpoints(program)
         },
         {
+            title: 'Create .vscode folder',
+            task: () => fs.copy('./addons/.vscode', `${projectDirName}/.vscode`)
+        },
+        {
             title: 'Create sequelize folder',
             task: () => fs.copy('./db', `${projectDirName}/db`)
         },
@@ -121,7 +124,9 @@ const initProject = (program) => {
         },
         {
             title: 'Create sequelize custom config.json file',
-            task: () => fs.writeFile(`${projectDirName}/db/config.json`, sequelizeConfigJsonString({dbDialect: program.dbDialect}))
+            task: () => fs.writeFile(`${projectDirName}/db/config.json`, sequelizeConfigJsonString({
+                dbDialect: program.dbDialect
+            }))
         },
         {
             title: 'Create .sequelizerc file',

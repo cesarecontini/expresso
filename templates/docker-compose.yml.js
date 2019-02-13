@@ -1,11 +1,10 @@
-
 const DB_DIALECT_MYSQL = 'mysql';
 const DB_DIALECT_POSTGRES = 'postgres';
 
 module.exports = (opts) => {
 
-if(opts.dbDialect === DB_DIALECT_MYSQL) {
-return `
+    if (opts.dbDialect === DB_DIALECT_MYSQL) {
+        return `
 version: '3'
 services: 
     web:
@@ -16,6 +15,7 @@ services:
         container_name: ${opts.projectName}_web_1
         ports:
             - "${opts.port}:3000"
+            - "9229:9229"
         environment: 
             NODE_ENV: development
             DATABASE_URL: mysql://mysql:password@db:3306/mysql
@@ -36,8 +36,8 @@ services:
         restart: always
         ports:
             - 8080:8080`;
-} else if (opts.dbDialect === DB_DIALECT_POSTGRES) {
-return `
+    } else if (opts.dbDialect === DB_DIALECT_POSTGRES) {
+        return `
 version: '3'
 services: 
     web:
@@ -48,6 +48,7 @@ services:
         container_name: ${opts.projectName}_web_1
         ports:
             - "${opts.port}:3000"
+            - "9229:9229"
         environment: 
             NODE_ENV: development
             DATABASE_URL: postgres://postgres:password@db:5432/postgres
@@ -67,6 +68,6 @@ services:
         environment: 
             PGADMIN_DEFAULT_EMAIL: user@user.com
             PGADMIN_DEFAULT_PASSWORD: password`;
-}
+    }
 
 }
