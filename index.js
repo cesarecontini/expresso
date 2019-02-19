@@ -31,7 +31,9 @@ const addApiEndpoints = (program) => {
     const routersDir = `./${program.init}/routers`;
     fs.mkdir(routersDir)
         .then(() => {
-            let promisesArray = [];
+            let promisesArray = [
+                fs.copy('./routers/auth-route.js', `${routersDir}/auth-route.js`)
+            ];
             program.list.forEach(propertyName => {
                 const plural = pluralize.plural(propertyName);
                 const singular = pluralize.singular(propertyName);

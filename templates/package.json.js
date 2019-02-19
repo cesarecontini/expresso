@@ -34,7 +34,7 @@ module.exports = (opts) => {
         "erase-db": "docker exec -it ${opts.appName}_web_1 ./node_modules/.bin/sequelize db:migrate:undo:all",
         "migrate": "docker exec -it ${opts.appName}_web_1 ./node_modules/.bin/sequelize db:migrate",
         "seed": "docker exec -it ${opts.appName}_web_1 ./node_modules/.bin/sequelize db:seed:all",
-        "npminstall-and-start": "npm install && npm debug",
+        "npminstall-and-start": "npm install && npm run debug",
         "init": "docker-compose build && docker-compose up",
         "init-db": "npm-run-all migrate seed",
         "reset-db": "npm-run-all erase-db migrate seed"
@@ -53,6 +53,7 @@ module.exports = (opts) => {
         "jsonwebtoken": "^8.4.0",
         "passport": "^0.4.0",
         "passport-jwt": "^4.0.0",
+        "passport-local": "^1.0.0",
         "rmdir": "^1.2.0",
         "sequelize": "^4.42.0",
         "sequelize-cli": "^5.4.0",

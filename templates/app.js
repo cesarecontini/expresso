@@ -8,7 +8,7 @@ const requireRouterModules = (routers) => {
 }
 
 const addRouterModules = (routers) => {
-    return routers.map(r => `app.use('/${r}', route${capitalize(r)})`)
+    return routers.map(r => `app.use('/${r}', /*passport.authenticate('jwt', {session: false}),*/ route${capitalize(r)})`)
         .join('\n');
 }
 
@@ -18,13 +18,14 @@ module.exports = (opts) => {
 const settings = require('./settings');
 const helmet = require('helmet');
 const bodyParser = require('body-parser');
+const passport = require('passport');
+
+const passportLocalStrategy = require('./services/passportStrategiesService');
+passportLocalStrategy(passport);
+
 const express = require('express');
 const app = express();
 const port = settings.port;
-
-const passport = require("passport");
-const jwtStrategry  = require("./services/jwtPassportStrategyService")
-passport.use(jwtStrategry);
 
 app.use(helmet());
 app.use( bodyParser.json() );     
@@ -34,15 +35,11 @@ app.use( bodyParser.urlencoded({
 
 ${requireRouterModules(opts.routersList)}
 
+const authRouter = require('./routers/auth-route    ');
+
 ${addRouterModules(opts.routersList)}
 
-app.get("/", (req, res) => {
-    res.send("hello express server")
-})
-
-app.get("/protected", passport.authenticate('jwt', { session: false }), (req, res) => {
-    return res.status(200).send("YAY! this is a protected Route")
-})
+app.use('/auth', authRouter);
 
 app.listen(port, () => console.log('Example app listening on port', port));
 `;
