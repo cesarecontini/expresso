@@ -1,5 +1,5 @@
 {
-  "name": "expresso",
+  "name": "expresso-machine",
   "version": "1.0.0",
   "description": "expresso is cli app which generates a full express js application, including api endpoints, database/sequelize initial migrations, seeders, modules. It also create a dockerfile and docker-compose adjusted to the database dialect set.",
   "main": "index.js",
@@ -21,7 +21,7 @@
     "mssql"
   ],
   "bin": {
-    "expresso": "bin/expresso"
+    "expresso-machine": "bin/expresso-machine"
   },
   "dependencies": {
     "bcrypt": "^3.0.4",
@@ -31,6 +31,7 @@
     "commander": "^2.19.0",
     "execa": "^1.0.0",
     "express": "^4.16.4",
+    "figlet": "^1.2.1",
     "fs-extra": "^7.0.1",
     "helmet": "^3.15.0",
     "listr": "^0.14.3",

@@ -34,7 +34,7 @@ const veryfyJWT = (jwtPayload, cb) => {
             id: jwtPayload.id
         },
         attributes: ['id', 'firstName', 'lastName', 'email']
-    }).then(user => cb(null, user.toJSON()))
+    }).then(user => cb(null, user))
     .catch(err => cb(err));
 };
 
@@ -51,7 +51,10 @@ module.exports = (passport) => {
     passport.use(
         new JWTStrategy({
                 jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
-                secretOrKey: settings.jwtSecret
+                secretOrKey: settings.jwtSecret,
+                issuer: settings.jwtIssuer,
+                audience: settings.jwtAudience
+                /** you may add more options here */
             },
             veryfyJWT
         )

@@ -8,7 +8,7 @@ const requireRouterModules = (routers) => {
 }
 
 const addRouterModules = (routers) => {
-    return routers.map(r => `app.use('/${r}', /*passport.authenticate('jwt', {session: false}),*/ route${capitalize(r)})`)
+    return routers.map(r => `app.use('/${r}', passport.authenticate('jwt', {session: false}), route${capitalize(r)})`)
         .join('\n');
 }
 
@@ -35,7 +35,7 @@ app.use( bodyParser.urlencoded({
 
 ${requireRouterModules(opts.routersList)}
 
-const authRouter = require('./routers/auth-route    ');
+const authRouter = require('./routers/auth-route');
 
 ${addRouterModules(opts.routersList)}
 

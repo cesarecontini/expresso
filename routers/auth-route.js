@@ -24,7 +24,11 @@ router.post('/login', function (req, res, next) {
                 res.send(err);
             }
 
-            const token = jwt.sign(user, settings.jwtSecret);
+            const token = jwt.sign(user, settings.jwtSecret, {
+                audience: settings.jwtAudience,
+                issuer: settings.jwtIssuer
+                /* You may add more options here */
+            });
 
             return res.json({user, token});
         });

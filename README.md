@@ -1,10 +1,10 @@
-# WELCOME TO THE EXPRESSO PROJECT
+# WELCOME TO THE EXPRESSO-MACHINE PROJECT
 
 ## EXPRESS JS API CLI APPLICATION GENERATOR
 
-### ABOUT EXPRESSO
+### ABOUT EXPRESSO-MACHINE
 
-Expresso is an express js API generator which provides the following features:
+Expresso-machine is an express js API generator cli application which provides the following features:
 
 * Express application skeleton
 * REST API CRUD generation - GET, POST, PUT, DELETE HTTP methods implementation for each API endpoint defined in cli command
@@ -17,19 +17,19 @@ Expresso is an express js API generator which provides the following features:
 ### GET STARTED
 
 ```
-npm install -g expresso
+npm install -g expresso-machine
 ```
 
 This will install the cli expresso command at global level. Once the installation process completes run the following command:
 
 ```
-expresso -h
+expresso-machine -h
 ```
 
 You should get the following output or similar:
 
 ```
-Usage: expresso -i my-app l- product,category
+Usage: expresso-machine -i my-app l- product,category
 
 Options:
   -V, --version                output the version number
@@ -48,7 +48,7 @@ Options:
 At this point you are ready to start generating express js apps! Take a look at the following example command to run:
 
 ```
-expresso -i my-animal-app -l dog,cat
+expresso-machine -i my-animal-app -l dog,cat
 ```
 
 This command will create a 'my-animal-app' folder with a ready to run dockerized application. CD into the folder:

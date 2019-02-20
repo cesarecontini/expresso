@@ -7,6 +7,7 @@ const rmdir = require('rmdir');
 const pluralize = require('pluralize');
 const validator = require('validator');
 const Listr = require('listr');
+const figlet = require('figlet');
 
 const appString = require('./templates/app');
 const packageJsonString = require('./templates/package.json');
@@ -18,6 +19,7 @@ const sequelizeSeedString = require('./templates/sequelize-seed');
 const sequelizeConfigJsonString = require('./templates/sequelize-config.json');
 const dockerString = require('./templates/docker');
 const dockerComposeString = require('./templates/docker-compose.yml');
+const gitIgnoreString = require('./templates/gitignore');
 
 const list = (val) => {
     if (!val) return [];
@@ -72,6 +74,18 @@ const addSequelizeFiles = (program, targetDirPath, fileTemplateStringFn, isFilen
 
 const initProject = (program) => {
     const projectDirName = `./${program.init}`;
+
+
+    console.log(chalkPipe('orange.bold')('expresso-machine is brewing....'));
+
+    figlet(`${program.init}`, function(err, data) {
+        if (err) {
+            console.log('Something went wrong...');
+            console.dir(err);
+            return;
+        }
+        console.log(chalkPipe('orange.bold')(data));
+    });
 
     const tasks = new Listr([{
             title: 'Create project directory',
@@ -150,11 +164,28 @@ const initProject = (program) => {
                 dbDialect: program.dbDialect,
                 projectName: program.init
             }))
-        }
+        },
+        {
+            title: 'Creating .git ignore file',
+            task: () => fs.writeFile(`${projectDirName}/.gitignore`, gitIgnoreString({}))
+        },
     ]);
 
     tasks
         .run()
+        .then(() => {
+            console.log();
+            console.log(chalkPipe('orange.bold')('ALL DONE!'));
+            console.log();
+            console.log(chalkPipe('orange.bold')(`1) CD into newly brewed project ${program.init}`));
+            console.log(chalkPipe('white.bold')(`~$ cd ${program.init}`));
+            console.log();
+            console.log(chalkPipe('orange.bold')(`2) Docker compose build & up in background`))
+            console.log(chalkPipe('white.bold')(`~/${program.init}$ npm run init &`));
+            console.log();
+            console.log(chalkPipe('orange.bold')(`3) When process ends, build DB and seed it`))
+            console.log(chalkPipe('white.bold')(`~/${program.init}$ npm run init-db`));
+        })
         .catch(e => console.log(chalkPipe('bgRed.#cccccc')('ERROR!!', e.message)));
 
 };
@@ -170,7 +201,6 @@ program.version('0.1.0')
     .option('-l, --list <apiEndpoints>', 'A list of api properties <apiEndpoints>, comma-separated', list, ['product', 'category'])
     .parse(process.argv);
 
-console.log(chalkPipe('blue.bold')('CREATING PROJECT...'));
 if (program.init) {
     const projectDirName = `./${program.init}`;
 
@@ -184,4 +214,5 @@ if (program.init) {
     } else {
         initProject(program);
     }
+
 };

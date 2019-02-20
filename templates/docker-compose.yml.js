@@ -20,6 +20,8 @@ services:
             NODE_ENV: development
             DATABASE_URL: mysql://mysql:password@db:3306/mysql
             JWT_SECRET: jwtsecret
+            JWT_ISSUER: some.issuer.com
+            JWT_AUDIENCE: mysite.net
     db:
         image: mysql
         command: --default-authentication-plugin=mysql_native_password
@@ -53,6 +55,8 @@ services:
             NODE_ENV: development
             DATABASE_URL: postgres://postgres:password@db:5432/postgres
             JWT_SECRET: jwtsecret
+            JWT_ISSUER: some.issuer.com
+            JWT_AUDIENCE: mysite.net
     db:
         image: postgres
         restart: always
