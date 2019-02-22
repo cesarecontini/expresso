@@ -53,7 +53,6 @@ const addApiEndpoints = (program) => {
 const addSequelizeFiles = (program, targetDirPath, fileTemplateStringFn, isFilenameWithTimestampSuffix) => {
     const targetDir = `./${program.init}${targetDirPath}`;
     let promisesArray = [];
-    let fileTimestamp = 20190129105640;
     let i = 1;
     program.list.forEach(modelName => {
         let singularModelName = pluralize.singular(modelName);
