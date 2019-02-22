@@ -69,7 +69,7 @@ npm run init &
 This command will run docker-compose build and the overall app. Wait until this process completes in the background. When it does run:
 
 ```
-npm run init-db &
+npm run init-db
 ```
 
 This will create a sequelize migration and create the Dog, Cat tables as well as the seeding process to create a record for each table.
