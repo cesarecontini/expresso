@@ -8,6 +8,7 @@ const pluralize = require('pluralize');
 const validator = require('validator');
 const Listr = require('listr');
 const figlet = require('figlet');
+const pathToExpressoMachine = require("global-modules-path").getPath("expresso-machine");
 
 const appString = require('./templates/app');
 const packageJsonString = require('./templates/package.json');
@@ -34,7 +35,7 @@ const addApiEndpoints = (program) => {
     fs.mkdir(routersDir)
         .then(() => {
             let promisesArray = [
-                fs.copy('./routers/auth-route.js', `${routersDir}/auth-route.js`)
+                fs.copy(`${pathToExpressoMachine}/routers/auth-route.js`, `${routersDir}/auth-route.js`)
             ];
             program.list.forEach(propertyName => {
                 const plural = pluralize.plural(propertyName);
@@ -74,7 +75,6 @@ const addSequelizeFiles = (program, targetDirPath, fileTemplateStringFn, isFilen
 
 const initProject = (program) => {
     const projectDirName = `./${program.init}`;
-
 
     console.log(chalkPipe('orange.bold')('expresso-machine is brewing....'));
 
@@ -119,12 +119,12 @@ const initProject = (program) => {
             task: () => addApiEndpoints(program)
         },
         {
-            title: 'Create .vscode folder',
-            task: () => fs.copy('./addons/.vscode', `${projectDirName}/.vscode`)
+            title: 'Create vscode folder',
+            task: () => fs.copy(`${pathToExpressoMachine}/addons/vscode`, `${projectDirName}/.vscode`)
         },
         {
             title: 'Create sequelize folder',
-            task: () => fs.copy('./db', `${projectDirName}/db`)
+            task: () => fs.copy(`${pathToExpressoMachine}/db`, `${projectDirName}/db`)
         },
         {
             title: 'Create model files',
@@ -146,11 +146,11 @@ const initProject = (program) => {
         },
         {
             title: 'Create .sequelizerc file',
-            task: () => fs.copy('.sequelizerc', `${projectDirName}/.sequelizerc`)
+            task: () => fs.copy(`${pathToExpressoMachine}/.sequelizerc`, `${projectDirName}/.sequelizerc`)
         },
         {
             title: 'Create services folder',
-            task: () => fs.copy('./services', `${projectDirName}/services`)
+            task: () => fs.copy(`${pathToExpressoMachine}/services`, `${projectDirName}/services`)
         },
         {
             title: 'Create Dockerfile',
