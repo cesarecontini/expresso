@@ -1,7 +1,4 @@
-'use strict';
-
-module.exports = (opts) => {
-
+module.exports = opts => {
     return `
 {
     "development": {
@@ -18,4 +15,4 @@ module.exports = (opts) => {
     }
 }   
 `;
-}
+};

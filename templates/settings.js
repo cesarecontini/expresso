@@ -1,7 +1,4 @@
-'use strict';
-
-module.exports = (opts) => {
-
+module.exports = opts => {
     return `
 module.exports = {
     port: ${opts.port},
@@ -17,4 +14,4 @@ module.exports = {
     excludedUserAttributes: ['createdAt', 'updatedAt', 'token', 'password']
 }    
 `;
-}
+};

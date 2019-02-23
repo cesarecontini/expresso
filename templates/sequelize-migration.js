@@ -1,9 +1,7 @@
-'use strict';
 const capitalize = require('capitalize');
 const pluralize = require('pluralize');
 
-module.exports = (opts) => {
-
+module.exports = opts => {
     const pluralModel = capitalize(pluralize.plural(opts.modelName));
 
     return `
@@ -35,4 +33,4 @@ module.exports = {
     }
 };
 `;
-}
+};

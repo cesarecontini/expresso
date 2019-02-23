@@ -1,10 +1,9 @@
-'use strict';
-
 const os = require('os');
 
-const getOsSpecific = (platform) => {
-    if(platform === 'linux') {
-        return `
+const getOsSpecific = platform => {
+    let osSpecific = '';
+    if (platform === 'linux') {
+        osSpecific = `
 ### Linux ###
 *~
 
@@ -19,8 +18,8 @@ const getOsSpecific = (platform) => {
 
 # .nfs files are created when an open file is removed but is still being accessed
 .nfs*`;
-    } else if(platform === 'darwin') {
-        return `
+    } else if (platform === 'darwin') {
+        osSpecific = `
 ### macOS ###
 # General
 .DS_Store
@@ -48,8 +47,8 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk`;
-    } else if(platform === 'win32') {
-        return `
+    } else if (platform === 'win32') {
+        osSpecific = `
 ### Windows ###
 # Windows thumbnail cache files
 Thumbs.db
@@ -75,10 +74,11 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk`;
     }
+
+    return osSpecific;
 };
 
-module.exports = (opts) => {
-
+module.exports = () => {
     return `
 ${getOsSpecific(os.platform())}
 ### Node ###
@@ -163,4 +163,4 @@ typings/
 # DynamoDB Local files
 .dynamodb/
 `;
-}
+};

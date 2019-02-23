@@ -1,40 +1,51 @@
-'use strict';
-
-const settings = require('../settings');
-
 const express = require('express');
+
 const router = express.Router();
 
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
+const settings = require('../settings');
 
-router.post('/login', function (req, res, next) {
-
-    passport.authenticate('local', {session: false}, (err, user, info) => {
-        console.log(err);
-        if (err || !user) {
-            return res.status(400).json({
-                message: info ? info.message : 'Login failed',
-                user: user
-            });
-        }
-
-        req.login(user, {session: false}, (err) => {
-            if (err) {
-                res.send(err);
+router.post('/login', (req, res) => {
+    passport.authenticate(
+        'local',
+        {
+            session: false,
+        },
+        (err, user, info) => {
+            if (err || !user) {
+                res.status(400).json({
+                    message: info ? info.message : 'Login failed',
+                    user,
+                });
+                return;
             }
 
-            const token = jwt.sign(user, settings.jwtSecret, {
-                audience: settings.jwtAudience,
-                issuer: settings.jwtIssuer
-                /* You may add more options here */
-            });
+            req.login(
+                user,
+                {
+                    session: false,
+                },
+                errLogin => {
+                    if (errLogin) {
+                        res.send(errLogin);
+                        return;
+                    }
 
-            return res.json({user, token});
-        });
-    })
-    (req, res);
+                    const token = jwt.sign(user, settings.jwtSecret, {
+                        audience: settings.jwtAudience,
+                        issuer: settings.jwtIssuer,
+                        /* You may add more options here */
+                    });
 
+                    res.json({
+                        user,
+                        token,
+                    });
+                }
+            );
+        }
+    )(req, res);
 });
 
 module.exports = router;

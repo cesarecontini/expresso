@@ -1,9 +1,7 @@
-'use strict';
 const capitalize = require('capitalize');
 const pluralize = require('pluralize');
 
-module.exports = (opts) => {
-
+module.exports = opts => {
     const singularModel = capitalize(pluralize.singular(opts.modelName));
 
     return `
@@ -18,4 +16,4 @@ module.exports = (sequelize, DataTypes) => {
     return ${singularModel};
 };
 `;
-}
+};

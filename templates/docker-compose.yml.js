@@ -1,10 +1,10 @@
 const DB_DIALECT_MYSQL = 'mysql';
 const DB_DIALECT_POSTGRES = 'postgres';
 
-module.exports = (opts) => {
-
+module.exports = opts => {
+    let dockerComposeFile = '';
     if (opts.dbDialect === DB_DIALECT_MYSQL) {
-        return `
+        dockerComposeFile = `
 version: '3'
 services: 
     web:
@@ -38,7 +38,8 @@ services:
         restart: always
         ports:
             - 8080:8080`;
-    } else if (opts.dbDialect === DB_DIALECT_POSTGRES) {
+    }
+    if (opts.dbDialect === DB_DIALECT_POSTGRES) {
         return `
 version: '3'
 services: 
@@ -74,4 +75,5 @@ services:
             PGADMIN_DEFAULT_PASSWORD: password`;
     }
 
-}
+    return dockerComposeFile;
+};

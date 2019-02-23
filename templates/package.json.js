@@ -1,6 +1,4 @@
-'use strict';
-module.exports = (opts) => {
-
+module.exports = opts => {
     let dbDependencies = '';
 
     switch (opts.dbDialect) {
@@ -17,6 +15,9 @@ module.exports = (opts) => {
         case 'mysql':
             dbDependencies = '"tedious": "^4.1.3",';
             break;
+        default:
+            dbDependencies = '';
+            break;
     }
 
     return `
@@ -31,9 +32,15 @@ module.exports = (opts) => {
         "debug": "nodemon --inspect=0.0.0.0:9229 -e js,html,css ./index.js",
         "dockerbuild": "docker-compose build",
         "dockerup": "docker-compose up",
-        "erase-db": "docker exec -it ${opts.appName}_web_1 ./node_modules/.bin/sequelize db:migrate:undo:all",
-        "migrate": "docker exec -it ${opts.appName}_web_1 ./node_modules/.bin/sequelize db:migrate",
-        "seed": "docker exec -it ${opts.appName}_web_1 ./node_modules/.bin/sequelize db:seed:all",
+        "erase-db": "docker exec -it ${
+            opts.appName
+        }_web_1 ./node_modules/.bin/sequelize db:migrate:undo:all",
+        "migrate": "docker exec -it ${
+            opts.appName
+        }_web_1 ./node_modules/.bin/sequelize db:migrate",
+        "seed": "docker exec -it ${
+            opts.appName
+        }_web_1 ./node_modules/.bin/sequelize db:seed:all",
         "npminstall-and-start": "npm install && npm run debug",
         "init": "docker-compose build && docker-compose up",
         "init-db": "npm-run-all migrate seed",
@@ -57,12 +64,21 @@ module.exports = (opts) => {
         "rmdir": "^1.2.0",
         "sequelize": "^4.42.0",
         "sequelize-cli": "^5.4.0",
-        "validate": "^4.5.1"
+        "validate": "^4.5.1",
+        "validator": "^10.11.0"
     },
     "devDependencies": {
+        "eslint": "^5.3.0",
+        "eslint-config-airbnb": "^17.1.0",
+        "eslint-config-prettier": "^4.0.0",
+        "eslint-plugin-import": "^2.16.0",
+        "eslint-plugin-jsx-a11y": "^6.2.1",
+        "eslint-plugin-prettier": "^3.0.1",
+        "eslint-plugin-react": "^7.12.4",
         "nodemon": "^1.18.9",
-        "npm-run-all": "^4.1.5"
+        "npm-run-all": "^4.1.5",
+        "prettier": "1.16.4"
     }
 }
     `;
-}
+};
