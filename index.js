@@ -33,8 +33,8 @@ const list = val => {
         .map(v => v.replace(/ /g, ''));
 };
 
-const addApiEndpoints = program => {
-    const routersDir = `./${program.init}/routers`;
+const addApiEndpoints = prog => {
+    const routersDir = `./${prog.init}/routers`;
     fs.mkdir(routersDir).then(() => {
         const promisesArray = [
             fs.copy(
@@ -42,7 +42,7 @@ const addApiEndpoints = program => {
                 `${routersDir}/auth-route.js`
             ),
         ];
-        program.list.forEach(propertyName => {
+        prog.list.forEach(propertyName => {
             const plural = pluralize.plural(propertyName);
             const singular = pluralize.singular(propertyName);
             promisesArray.push(
@@ -59,15 +59,15 @@ const addApiEndpoints = program => {
 };
 
 const addSequelizeFiles = (
-    program,
+    prog,
     targetDirPath,
     fileTemplateStringFn,
     isFilenameWithTimestampSuffix
 ) => {
-    const targetDir = `./${program.init}${targetDirPath}`;
+    const targetDir = `./${prog.init}${targetDirPath}`;
     const promisesArray = [];
     let i = 1;
-    program.list.forEach(modelName => {
+    prog.list.forEach(modelName => {
         const singularModelName = pluralize.singular(modelName);
         let fileName = pluralize.singular(modelName);
         if (isFilenameWithTimestampSuffix) {
@@ -91,12 +91,12 @@ const addSequelizeFiles = (
     return Promise.all(promisesArray);
 };
 
-const initProject = program => {
-    const projectDirName = `./${program.init}`;
+const initProject = prog => {
+    const projectDirName = `./${prog.init}`;
 
     console.log(chalkPipe('orange.bold')('expresso-machine is brewing....'));
 
-    figlet(`${program.init}`, (err, data) => {
+    figlet(`${prog.init}`, (err, data) => {
         if (err) {
             console.log('Something went wrong...');
             console.dir(err);
@@ -108,7 +108,7 @@ const initProject = program => {
     const tasks = new Listr([
         {
             title: 'Create project directory',
-            task: () => fs.mkdir(program.init),
+            task: () => fs.mkdir(prog.init),
         },
         {
             title: 'Create index.js main file',
@@ -116,8 +116,8 @@ const initProject = program => {
                 return fs.writeFile(
                     `${projectDirName}/index.js`,
                     appString({
-                        port: program.port,
-                        routersList: program.list.map(l => pluralize.plural(l)),
+                        port: prog.port,
+                        routersList: prog.list.map(l => pluralize.plural(l)),
                     })
                 );
             },
@@ -128,8 +128,8 @@ const initProject = program => {
                 fs.writeFile(
                     `${projectDirName}/package.json`,
                     packageJsonString({
-                        dbDialect: program.dbDialect,
-                        appName: program.init,
+                        dbDialect: prog.dbDialect,
+                        appName: prog.init,
                     })
                 ),
         },
@@ -139,14 +139,14 @@ const initProject = program => {
                 fs.writeFile(
                     `${projectDirName}/settings.js`,
                     settingsString({
-                        port: program.port,
-                        dbDialect: program.dbDialect,
+                        port: prog.port,
+                        dbDialect: prog.dbDialect,
                     })
                 ),
         },
         {
             title: 'Create router files',
-            task: () => addApiEndpoints(program),
+            task: () => addApiEndpoints(prog),
         },
         {
             title: 'Create vscode folder',
@@ -165,7 +165,7 @@ const initProject = program => {
             title: 'Create model files',
             task: () =>
                 addSequelizeFiles(
-                    program,
+                    prog,
                     '/db/models',
                     sequelizeModelString,
                     false
@@ -185,7 +185,7 @@ const initProject = program => {
             title: 'Create seeder files',
             task: () =>
                 addSequelizeFiles(
-                    program,
+                    prog,
                     '/db/migrations',
                     sequelizeMigrationString,
                     true
@@ -197,7 +197,7 @@ const initProject = program => {
                 fs.writeFile(
                     `${projectDirName}/db/config.json`,
                     sequelizeConfigJsonString({
-                        dbDialect: program.dbDialect,
+                        dbDialect: prog.dbDialect,
                     })
                 ),
         },
@@ -228,10 +228,10 @@ const initProject = program => {
                 fs.writeFile(
                     `${projectDirName}/docker-compose.yml`,
                     dockerComposeString({
-                        port: program.port,
-                        dbPort: program.dbport,
-                        dbDialect: program.dbDialect,
-                        projectName: program.init,
+                        port: prog.port,
+                        dbPort: prog.dbport,
+                        dbDialect: prog.dbDialect,
+                        projectName: prog.init,
                     })
                 ),
         },
@@ -269,10 +269,10 @@ const initProject = program => {
             console.log();
             console.log(
                 chalkPipe('orange.bold')(
-                    `1) CD into newly brewed project ${program.init}`
+                    `1) CD into newly brewed project ${prog.init}`
                 )
             );
-            console.log(chalkPipe('white.bold')(`~$ cd ${program.init}`));
+            console.log(chalkPipe('white.bold')(`~$ cd ${prog.init}`));
             console.log();
             console.log(
                 chalkPipe('orange.bold')(
@@ -280,7 +280,7 @@ const initProject = program => {
                 )
             );
             console.log(
-                chalkPipe('white.bold')(`~/${program.init}$ npm run init &`)
+                chalkPipe('white.bold')(`~/${prog.init}$ npm run init &`)
             );
             console.log();
             console.log(
@@ -289,7 +289,7 @@ const initProject = program => {
                 )
             );
             console.log(
-                chalkPipe('white.bold')(`~/${program.init}$ npm run init-db`)
+                chalkPipe('white.bold')(`~/${prog.init}$ npm run init-db`)
             );
         })
         .catch(e =>
