@@ -1,21 +1,27 @@
 # WELCOME TO THE EXPRESSO-MACHINE PROJECT
 
-![alt text](./assets/logo.png "Logo Title Text 1")
+![Expresso machine](./assets/logo.png "Expresso Machine")
 
 
 ## EXPRESS JS API CLI APPLICATION GENERATOR
 
 ### ABOUT EXPRESSO-MACHINE
 
-Expresso-machine is an express js API generator cli application which provides the following features:
+Expresso-machine is a CLI utility to generate an express js app featuring:
 
 * Express application skeleton
 * REST API CRUD generation - GET, POST, PUT, DELETE HTTP methods implementation for each API endpoint defined in cli command
-* Validation schema initial definition
 * Generation of an initial SEQUELIZE model, migration, seed & configuration files for models defined in cli options
 * Dockerfile & docker-compose.yml files generated for out-of-the-box project docker virtualization
 * VISUAL CODE configuration for out-of-the-box debugging
 * JWT initial implementation for API endpoints protection
+* Validation schema initial definition for each RESTFUL endpoint generated
+* eslint configuration
+* prettier configuration
+
+### PRE-REQUISITES
+
+As expresso-machine dockerizes the generated expressjs app, it would be beneficial to have the **docker** and **docker-compose** commands installed in your machine
 
 ### GET STARTED
 
@@ -51,13 +57,15 @@ Options:
 At this point you are ready to start generating express js apps! Take a look at the following example command to run:
 
 ```
-expresso-machine -i my-animal-app -l dog,cat
+expresso-machine -i my-app -l dog,cat
 ```
 
-This command will create a 'my-animal-app' folder with a ready to run dockerized application. CD into the folder:
+![terminal screenchot](./assets/terminal.png)
+
+This command will create a 'my-app' folder with a ready to run dockerized application. CD into the folder:
 
 ```
-cd my-animal-app
+cd my-app
 ```
 
 Run the following command as a background process:
@@ -83,4 +91,12 @@ POST localhost:3000/dogs/ (create a dog, you must include the 'dog' object in th
 PUT localhost:3000/dogs/:id (update a dog, you must include the 'dog' object in the request body and 'id' <:id>)
 DELETE localhost:3000/dogs/:id (delete dog with 'id' :id)
 
+```
+
+```
+GET localhost:3000/cats/ (all paginated cats)
+GET localhost:3000/cats/:id (get a cat with id <:id>)
+POST localhost:3000/cats/ (create a cat, you must include the 'cat' object in the request body)
+PUT localhost:3000/cats/:id (update a cat, you must include the 'cat' object in the request body and 'id' <:id>)
+DELETE localhost:3000/cats/:id (delete cat with 'id' :id)
 ```

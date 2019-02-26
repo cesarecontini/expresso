@@ -18,6 +18,7 @@ services:
             - "9229:9229"
         environment: 
             NODE_ENV: development
+            PORT: ${opts.port}
             DATABASE_URL: mysql://mysql:password@db:3306/mysql
             JWT_SECRET: jwtsecret
             JWT_ISSUER: some.issuer.com

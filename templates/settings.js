@@ -1,7 +1,7 @@
 module.exports = opts => {
     return `
 module.exports = {
-    port: ${opts.port},
+    port: process.env.PORT,
     dbDialect: '${opts.dbDialect}',
     dbConnectionString: process.env.DATABASE_URL,
 
