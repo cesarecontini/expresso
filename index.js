@@ -34,7 +34,7 @@ const list = val => {
 };
 
 const addApiEndpoints = prog => {
-    const routersDir = `./${prog.init}/routers`;
+    const routersDir = `./${prog.init}/src/routers`;
     fs.mkdir(routersDir).then(() => {
         const promisesArray = [
             fs.copy(
@@ -72,7 +72,7 @@ const addSequelizeFiles = (
         let fileName = pluralize.singular(modelName);
         if (isFilenameWithTimestampSuffix) {
             const fileNameSuffix =
-                targetDirPath === '/db/migrations'
+                targetDirPath === '/src/db/migrations'
                     ? `create-${fileName}`
                     : `${fileName}-data`;
             fileName = `${20190129105640 + i * 100}-${fileNameSuffix}`;
@@ -109,6 +109,10 @@ const initProject = prog => {
         {
             title: 'Create project directory',
             task: () => fs.mkdir(prog.init),
+        },
+        {
+            title: 'Create src directory',
+            task: () => fs.mkdir(`${prog.init}/src`),
         },
         {
             title: 'Create index.js main file',
@@ -159,14 +163,17 @@ const initProject = prog => {
         {
             title: 'Create sequelize folder',
             task: () =>
-                fs.copy(`${pathToExpressoMachine}/db`, `${projectDirName}/db`),
+                fs.copy(
+                    `${pathToExpressoMachine}/db`,
+                    `${projectDirName}/src/db`
+                ),
         },
         {
             title: 'Create model files',
             task: () =>
                 addSequelizeFiles(
                     prog,
-                    '/db/models',
+                    '/src/db/models',
                     sequelizeModelString,
                     false
                 ),
@@ -176,7 +183,7 @@ const initProject = prog => {
             task: () =>
                 addSequelizeFiles(
                     program,
-                    '/db/seeders',
+                    '/src/db/seeders',
                     sequelizeSeedString,
                     true
                 ),
@@ -186,7 +193,7 @@ const initProject = prog => {
             task: () =>
                 addSequelizeFiles(
                     prog,
-                    '/db/migrations',
+                    '/src/db/migrations',
                     sequelizeMigrationString,
                     true
                 ),
@@ -195,7 +202,7 @@ const initProject = prog => {
             title: 'Create sequelize custom config.json file',
             task: () =>
                 fs.writeFile(
-                    `${projectDirName}/db/config.json`,
+                    `${projectDirName}/src/db/config.json`,
                     sequelizeConfigJsonString({
                         dbDialect: prog.dbDialect,
                     })
@@ -214,7 +221,7 @@ const initProject = prog => {
             task: () =>
                 fs.copy(
                     `${pathToExpressoMachine}/services`,
-                    `${projectDirName}/services`
+                    `${projectDirName}/src/services`
                 ),
         },
         {
@@ -257,6 +264,22 @@ const initProject = prog => {
                 fs.copy(
                     `${pathToExpressoMachine}/.prettierrc`,
                     `${projectDirName}/.prettierrc`
+                ),
+        },
+        {
+            title: 'Create jest configuration file',
+            task: () =>
+                fs.copy(
+                    `${pathToExpressoMachine}/addons/jest/jest.config.js`,
+                    `${projectDirName}/jest.config.js`
+                ),
+        },
+        {
+            title: 'Create test folder structure',
+            task: () =>
+                fs.copy(
+                    `${pathToExpressoMachine}/addons/jest/test`,
+                    `${projectDirName}/test`
                 ),
         },
     ]);

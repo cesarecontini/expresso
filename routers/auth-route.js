@@ -4,7 +4,7 @@ const router = express.Router();
 
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
-const settings = require('../settings');
+const settings = require('../../settings');
 
 router.post('/login', (req, res) => {
     passport.authenticate(

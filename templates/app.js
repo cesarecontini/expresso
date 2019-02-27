@@ -4,7 +4,7 @@ const requireRouterModules = routers => {
     return routers
         .map(
             r =>
-                `const route${capitalize(r)} = require('./routers/route-${r}');`
+                `const route${capitalize(r)} = require('./src/routers/route-${r}');`
         )
         .join('\n');
 };
@@ -15,18 +15,17 @@ const addRouterModules = routers => {
             r =>
                 `app.use('/${r}', passport.authenticate('jwt', { session: false }), route${capitalize(
                     r
-                )})`
+                )});`
         )
         .join('\n');
 };
 
 module.exports = opts => {
-    return `
-const express = require('express');
+    return `const express = require('express');
 const helmet = require('helmet');
 const bodyParser = require('body-parser');
 const passport = require('passport');
-const passportLocalStrategy = require('./services/passportStrategiesService');
+const passportLocalStrategy = require('./src/services/passportStrategiesService');
 
 passportLocalStrategy(passport);
 
@@ -46,7 +45,7 @@ app.use(
 
 ${requireRouterModules(opts.routersList)}
 
-const authRouter = require('./routers/auth-route');
+const authRouter = require('./src/routers/auth-route');
 
 ${addRouterModules(opts.routersList)}
 

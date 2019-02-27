@@ -25,7 +25,8 @@
     "mssql"
   ],
   "bin": {
-    "expresso-machine": "bin/expresso-machine"
+    "expresso-machine": "bin/expresso-machine",
+    "em": "bin/expresso-machine"
   },
   "dependencies": {
     "bcrypt": "^3.0.4",

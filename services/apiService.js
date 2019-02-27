@@ -1,6 +1,6 @@
 const validator = require('validator');
 const sequelize = require('../db/models');
-const settings = require('../settings');
+const settings = require('../../settings');
 
 const getSequelizeModel = sequelizeModel => sequelize[sequelizeModel];
 const getOffset = (limit, page) => limit * (page - 1);

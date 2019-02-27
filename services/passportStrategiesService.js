@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs');
 const LocalStrategy = require('passport-local').Strategy;
 const passportJWT = require('passport-jwt');
-const settings = require('../settings');
+const settings = require('../../settings');
 const sequelize = require('../db/models');
 
 const ExtractJWT = passportJWT.ExtractJwt;

@@ -11,7 +11,7 @@ services:
         build: .
         volumes: 
             - ".:/src"
-        command: npm run debug
+        command: npm run npminstall-and-start
         container_name: ${opts.projectName}_web_1
         ports:
             - "${opts.port}:3000"
@@ -48,13 +48,14 @@ services:
         build: .
         volumes: 
             - ".:/src"
-        command: npm run debug
+        command: npm run npminstall-and-start
         container_name: ${opts.projectName}_web_1
         ports:
             - "${opts.port}:3000"
             - "9229:9229"
         environment: 
             NODE_ENV: development
+            PORT: ${opts.port}
             DATABASE_URL: postgres://postgres:password@db:5432/postgres
             JWT_SECRET: jwtsecret
             JWT_ISSUER: some.issuer.com

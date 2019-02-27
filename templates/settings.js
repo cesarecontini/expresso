@@ -1,6 +1,5 @@
 module.exports = opts => {
-    return `
-module.exports = {
+    return `module.exports = {
     port: process.env.PORT,
     dbDialect: '${opts.dbDialect}',
     dbConnectionString: process.env.DATABASE_URL,
@@ -11,7 +10,7 @@ module.exports = {
 
     recordsPerPage: 50,
     excludedAttributes: ['createdAt', 'updatedAt'],
-    excludedUserAttributes: ['createdAt', 'updatedAt', 'token', 'password']
-}    
+    excludedUserAttributes: ['createdAt', 'updatedAt', 'token', 'password'],
+};
 `;
 };

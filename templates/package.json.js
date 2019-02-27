@@ -27,7 +27,8 @@ module.exports = opts => {
     "description": "",
     "main": "index.js",
     "scripts": {
-        "test": "echo \\"Error: no test specified\\" && exit 1",
+        "test": "jest",
+        "test-coverage": "jest --coverage",
         "start": "nodemon -e js,html,css ./index.js",
         "debug": "nodemon --inspect=0.0.0.0:9229 -e js,html,css ./index.js",
         "dockerbuild": "docker-compose build",
@@ -41,7 +42,10 @@ module.exports = opts => {
         "seed": "docker exec -it ${
             opts.appName
         }_web_1 ./node_modules/.bin/sequelize db:seed:all",
-        "npminstall-and-start": "npm install && npm run debug",
+        "go-into-container": "docker exec -it ${
+            opts.appName
+        }_web_1 /bin/ash",
+        "npminstall-and-start": "yarn install && yarn run debug",
         "init": "docker-compose build && docker-compose up",
         "init-db": "npm-run-all migrate seed",
         "reset-db": "npm-run-all erase-db migrate seed"
@@ -72,9 +76,11 @@ module.exports = opts => {
         "eslint-config-airbnb": "^17.1.0",
         "eslint-config-prettier": "^4.0.0",
         "eslint-plugin-import": "^2.16.0",
+        "eslint-plugin-jest": "^22.3.0",
         "eslint-plugin-jsx-a11y": "^6.2.1",
         "eslint-plugin-prettier": "^3.0.1",
         "eslint-plugin-react": "^7.12.4",
+        "jest": "^24.1.0",
         "nodemon": "^1.18.9",
         "npm-run-all": "^4.1.5",
         "prettier": "1.16.4"
