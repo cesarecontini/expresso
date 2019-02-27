@@ -279,7 +279,7 @@ const initProject = prog => {
             task: () =>
                 fs.copy(
                     `${pathToExpressoMachine}/addons/jest/test`,
-                    `${projectDirName}/test`
+                    `${projectDirName}`
                 ),
         },
     ]);
