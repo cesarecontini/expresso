@@ -8,6 +8,8 @@ const pluralize = require('pluralize');
 const validator = require('validator');
 const Listr = require('listr');
 const figlet = require('figlet');
+const moment = require('moment');
+
 const pathToExpressoMachine = require('global-modules-path').getPath(
     'expresso-machine'
 );
@@ -72,10 +74,11 @@ const addSequelizeFiles = (
         let fileName = pluralize.singular(modelName);
         if (isFilenameWithTimestampSuffix) {
             const fileNameSuffix =
-                targetDirPath === '/src/db/migrations'
-                    ? `create-${fileName}`
-                    : `${fileName}-data`;
-            fileName = `${20190129105640 + i * 100}-${fileNameSuffix}`;
+                targetDirPath === '/src/db/migrations' ?
+                `create-${fileName}` :
+                `${fileName}-data`;
+            let timestamp = parseInt(moment().format('YYYYMMDDHHmmss'));
+            fileName = `${timestamp + (i * 100)}-${fileNameSuffix}`;
         }
 
         promisesArray.push(
@@ -105,8 +108,7 @@ const initProject = prog => {
         console.log(chalkPipe('orange.bold')(data));
     });
 
-    const tasks = new Listr([
-        {
+    const tasks = new Listr([{
             title: 'Create project directory',
             task: () => fs.mkdir(prog.init),
         },
@@ -351,9 +353,31 @@ program
         list,
         ['product', 'category']
     )
+    .option(
+        '-a, --about',
+        'About expresso-machine cli'
+    )
     .parse(process.argv);
 
-if (program.init) {
+
+
+if (program.about) {
+    figlet(`expresso-machine`, (err, data) => {
+        if (err) {
+            console.log('Something went wrong');
+            console.dir(err);
+            return;
+        }
+        console.log(chalkPipe('orange.bold')(''));
+        console.log(chalkPipe('orange.bold')('Brew an express(o) app within seconds with:'));
+        console.log(chalkPipe('orange.bold')(data));
+        console.log(chalkPipe('orange.bold')(''));
+        console.log(chalkPipe('orange.bold')('(c) 2019 Cesare Giani Contini'));
+        console.log(chalkPipe('orange.bold')('\n'));
+    });
+}
+
+if (!program.about && program.init) {
     const projectDirName = `./${program.init}`;
 
     if (program.overwrite) {

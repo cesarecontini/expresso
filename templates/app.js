@@ -4,7 +4,7 @@ const requireRouterModules = routers => {
     return routers
         .map(
             r =>
-                `const route${capitalize(r)} = require('./src/routers/route-${r}');`
+            `const route${capitalize(r)} = require('./src/routers/route-${r}');`
         )
         .join('\n');
 };
@@ -13,7 +13,7 @@ const addRouterModules = routers => {
     return routers
         .map(
             r =>
-                `app.use('/${r}', passport.authenticate('jwt', { session: false }), route${capitalize(
+            `app.use('/${r}', passport.authenticate('jwt', { session: false }), route${capitalize(
                     r
                 )});`
         )
@@ -21,7 +21,9 @@ const addRouterModules = routers => {
 };
 
 module.exports = opts => {
-    return `const express = require('express');
+    return `
+${requireRouterModules(opts.routersList)}
+const express = require('express');
 const helmet = require('helmet');
 const bodyParser = require('body-parser');
 const passport = require('passport');
@@ -43,13 +45,10 @@ app.use(
     })
 );
 
-${requireRouterModules(opts.routersList)}
-
 const authRouter = require('./src/routers/auth-route');
+app.use('/auth', authRouter);
 
 ${addRouterModules(opts.routersList)}
-
-app.use('/auth', authRouter);
 
 app.listen(port, () => console.log('Example app listening on port', port));
 
