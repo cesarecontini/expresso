@@ -2,7 +2,6 @@
 
 ![Expresso machine](./assets/logo.png "Expresso Machine")
 
-
 ## EXPRESS JS API CLI APPLICATION GENERATOR
 
 ### ABOUT EXPRESSO-MACHINE
