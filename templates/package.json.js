@@ -59,6 +59,7 @@ module.exports = opts => {
         "chalk-pipe": "^2.0.0",
         "commander": "^2.19.0",
         "express": "^4.16.4",
+        "express-pino-logger": "^4.0.0",
         "fs-extra": "^7.0.1",
         "helmet": "^3.15.0",
         "jsonwebtoken": "^8.4.0",

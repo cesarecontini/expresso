@@ -15,6 +15,8 @@ const sequelizeModelString = require('./templates/sequelize-model');
 const sequelizeMigrationString = require('./templates/sequelize-migration');
 const sequelizeSeedString = require('./templates/sequelize-seed');
 
+let filesAdded = [];
+
 const list = val => {
     if (!val) return [];
     return val
@@ -30,9 +32,11 @@ const addApiEndpoints = prog => {
     prog.list.forEach(propertyName => {
         const plural = pluralize.plural(propertyName);
         const singular = pluralize.singular(propertyName);
+        const fileName = `${routersDir}/route-${plural}.js`;
+        filesAdded.push(fileName);
         promisesArray.push(
             fs.writeFile(
-                `${routersDir}/route-${plural}.js`,
+                fileName,
                 apiRouterString({
                     modelSingularName: singular,
                 })
@@ -63,14 +67,16 @@ const addSequelizeFiles = (
             fileName = `${timestamp + (i * 100)}-${fileNameSuffix}`;
         }
 
+        const sequelizeFileName = `${targetDir}/${fileName}.js`;
         promisesArray.push(
             fs.writeFile(
-                `${targetDir}/${fileName}.js`,
+                sequelizeFileName,
                 fileTemplateStringFn({
                     modelName: singularModelName,
                 })
             )
         );
+        filesAdded.push(sequelizeFileName);
         i += 1;
     });
     return Promise.all(promisesArray);
@@ -88,7 +94,7 @@ const pathExist = path => {
 
 const initProject = prog => {
 
-    console.log(chalkPipe('orange.bold')('expresso-machine is adding endpoints....'));
+    console.log(chalkPipe('orange.bold')('\nexpresso-machine is adding endpoints....'));
 
     figlet(`expresso-machine`, (err, data) => {
         if (err) {
@@ -164,22 +170,12 @@ const initProject = prog => {
                     .then(file => file.toString().split('\n'))
                     .then(fileBits => {
 
-                        let index = fileBits.length - 1;
-                        for (let i in fileBits) {
-                            i = index;
-                            const line = fileBits[i];
-                            if (line && line.indexOf('app.listen') !== -1) {
-                                break;
-                            }
-                        }
-
-
-                        fileBits.splice(1, 0, ...prog.list.map(e => {
+                        fileBits.splice(0, 0, '\n', ...prog.list.map(e => {
                             return `const route${capitalize(pluralize.plural(e))} = require('./src/routers/route-${pluralize.plural(e)}');`;
                         }));
 
-                        fileBits.splice(index, 0, ...prog.list.map(e => {
-                            return `\napp.use('/${pluralize.plural(e)}', passport.authenticate('jwt', { session: false }), route${capitalize(pluralize.plural(e))});\n`;
+                        fileBits.splice(fileBits.length - 1, 0, '\n', ...prog.list.map(e => {
+                            return `app.use('/${pluralize.plural(e)}', passport.authenticate('jwt', { session: false }), route${capitalize(pluralize.plural(e))});\n`;
                         }));
 
                         return fs.writeFile('./index.js', fileBits.join('\n').toString());
@@ -193,6 +189,9 @@ const initProject = prog => {
         .then(() => {
             console.log();
             console.log(chalkPipe('orange.bold')('ALL DONE!'));
+            console.log(chalkPipe('orange.bold')('\n'))
+            console.log(chalkPipe('orange.bold')('We have created the following files: '))
+            filesAdded.forEach(f => console.log(chalkPipe('orange.bold')(f)));
         })
         .catch(e =>
             console.log(chalkPipe('bgRed.#cccccc')('ERROR!!', e.message))
