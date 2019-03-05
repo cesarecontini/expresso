@@ -108,12 +108,12 @@ DELETE localhost:3000/cats/:id (delete cat with 'id' :id)
 
 Once you seed the db an user is created with the following credentials:
 
-* email: jamesbond@somedomain.com
-* password: password
+-   email: jamesbond@somedomain.com
+-   password: password
 
 You can use POSTMAN or another REST client to post to the credentials to the **/auth/login** endpoint. I.e.
 
-![Login with postman](./assets/post-man.png)
+![Login with postman](./assets/post-man-1.png)
 
 Run the request and get the token:
 
