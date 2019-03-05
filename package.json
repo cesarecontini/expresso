@@ -10,7 +10,7 @@
     "type": "git",
     "url": "https://github.com/cesarecontini/expresso-machine.git"
   },
-  "author": "Cesare Giani Contini",
+  "author": "Cesare Giani Contini <caesarjs75@gmail.com>",
   "license": "MIT",
   "preferGlobal": true,
   "keywords": [
