@@ -145,4 +145,28 @@ expresso-machine-add-api-endpoints -l
 ./src/db/migrations/20190305001941-create-product.js
 ./src/db/migrations/20190305002041-create-category.js
 
+./index.js will also be amended so the route will be added.
+
 ![terminal screenshot](./assets/terminal-2.png)
+
+## NPM BUILT-IN COMMANDS IN GENERATED APP
+
+
+* **npm run init** - initialize project running `docker-compose build && docker-compose up` to install project dependencies and create docker containers and starts them
+* **npm run init-db** - short version to run database migrate and seed operations
+* **npm test** - runs jest tests
+* **npm run test-coverage** - produces a jest coverage report
+* **npm run start** - starts application with nodemon
+* **npm run debug** - starts application with nodemon & debugger for VS Studio code
+* **npm run dockerbuild** - runs `docker-compose build`
+* **npm run dockerup** - runs `docker-compose up`
+* **npm run erase-db** - runs the `docker exec -it my-app_web_1 ./node_modules/.bin/sequelize db:migrate:undo:all` from host OS into container and undoes SEQUELIZE migration
+* **npm run migrate** - runs the `docker exec -it my-app_web_1 ./node_modules/.bin/sequelize db:migrate` from host OS into container and generates SEQUELIZE migration
+* **npm run seed** - runs the `docker exec -it my-app_web_1 ./node_modules/.bin/sequelize db:seed:all` from host OS into container and performs SEQUELIZE database seed operation
+* **npm run go-into-container** - runs the `docker exec -it my-app_web_1 /bin/ash` to log into the docker container via shell
+
+## TO DO
+
+```
+* Adding a facility to the **expresso-machine** to also add templates (i.e. nunjucks or other template engines) and an extra CLI to add extra routes & templates.  
+```
