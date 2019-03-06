@@ -27,16 +27,17 @@ const express = require('express');
 const helmet = require('helmet');
 const bodyParser = require('body-parser');
 const passport = require('passport');
+const pino = require('express-pino-logger')();
+
 const passportLocalStrategy = require('./src/services/passportStrategiesService');
+
+const settings = require('./settings');
+const { port } = settings;
 
 passportLocalStrategy(passport);
 
-const settings = require('./settings');
-
 const app = express();
-
-const { port } = settings;
-
+app.use(pino);
 app.use(helmet());
 app.use(bodyParser.json());
 app.use(
