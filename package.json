@@ -27,8 +27,10 @@
   "bin": {
     "expresso-machine": "bin/expresso-machine",
     "expresso-machine-add-api-endpoints": "bin/expresso-machine-add-api-endpoints",
+    "expresso-machine-add-sq-association": "bin/expresso-machine-add-sq-association",
     "em": "bin/expresso-machine",
-    "em-add-api-endpoints": "bin/expresso-machine-add-api-endpoints"
+    "em-add-api-endpoints": "bin/expresso-machine-add-api-endpoints",
+    "em-add-sq-association": "bin/expresso-machine-add-sq-association"
   },
   "dependencies": {
     "bcrypt": "^3.0.4",
@@ -42,6 +44,7 @@
     "fs-extra": "^7.0.1",
     "global-modules-path": "^2.3.1",
     "helmet": "^3.15.0",
+    "inquirer": "^6.2.2",
     "listr": "^0.14.3",
     "moment": "^2.24.0",
     "mysql2": "^1.6.4",
