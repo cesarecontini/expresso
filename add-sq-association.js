@@ -113,11 +113,10 @@ const initProject = prog => {
                 let consoleMessages;
                 const sourceModelCapital = capitalize(pluralize.singular(answers.sourceModel));
                 const targetModelCapital = capitalize(pluralize.singular(answers.targetModel));
-
+                let timestamp = parseInt(moment().format('YYYYMMDDHHmmss'));
                 if (answers.associationType === 'belongsTo') {
                     task = () => {
-                        let timestamp = parseInt(moment().format('YYYYMMDDHHmmss'));
-
+                        
                         consoleMessages = () => console.log(chalkPipe('orange.bold')(`
                         Please edit the folloging file: ./src/db/models/${answers.sourceModel}.js by adding the following:
                         -----------------------------------------
@@ -129,6 +128,24 @@ const initProject = prog => {
                         return fs.writeFile(`./src/db/migrations/${timestamp}-add-${answers.sourceModel}-belongs-to-${answers.targetModel}-association.js`, associationMigrationTemplate({
                             sourceModel: answers.sourceModel,
                             targetModel: answers.targetModel,
+                            associationType: answers.associationType
+                        }));
+                    };
+                } else if (answers.associationType === 'hasOne') {
+                    task = () => {
+                        
+                        consoleMessages = () => console.log(chalkPipe('orange.bold')(`
+                        Please edit the folloging file: ./src/db/models/${answers.sourceModel}.js by adding the following:
+                        -----------------------------------------
+                        ${sourceModelCapital}.associate = function(models) {
+                            ${sourceModelCapital}.hasOne(models.${targetModelCapital});
+                        };
+                        -----------------------------------------
+                        `));
+                        return fs.writeFile(`./src/db/migrations/${timestamp}-add-${answers.sourceModel}-has-one-${answers.targetModel}-association.js`, associationMigrationTemplate({
+                            sourceModel: answers.sourceModel,
+                            targetModel: answers.targetModel,
+                            associationType: answers.associationType
                         }));
                     };
                 }
