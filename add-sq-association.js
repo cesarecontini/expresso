@@ -11,6 +11,8 @@ const figlet = require('figlet');
 const moment = require('moment');
 const inquirer = require('inquirer');
 
+const associationMigrationTemplate = require('./templates/sequelize-migration-association');
+
 let filesAdded = [];
 let existingModels = [];
 let inquirerAnswers = [];
@@ -68,11 +70,13 @@ const initProject = prog => {
             task: () => {
                 return fs.readdir('./src/db/models')
                     .then(files => {
-                        existingModels = files.filter(f => f != 'index.js');
+                        existingModels = files
+                            .filter(f => f != 'index.js')
+                            .map(f => f.replace(new RegExp('.js', 'g'), ''));
                     })
                     .then(() => Promise.resolve(true))
             },
-        }
+        },
     ]);
 
     tasks
@@ -92,7 +96,7 @@ const initProject = prog => {
                 },
                 {
                     type: 'list',
-                    name: 'associationTyoe',
+                    name: 'associationType',
                     message: 'Please pick an association type',
                     choices: ['belongsTo', 'hasOne', 'hasMany', 'belongsToMany']
                 },
@@ -104,6 +108,41 @@ const initProject = prog => {
 
                 inquirerAnswers = answers;
                 console.log('==========>', inquirerAnswers);
+
+                let task;
+                let consoleMessages;
+                const sourceModelCapital = capitalize(pluralize.singular(answers.sourceModel));
+                const targetModelCapital = capitalize(pluralize.singular(answers.targetModel));
+
+                if (answers.associationType === 'belongsTo') {
+                    task = () => {
+                        let timestamp = parseInt(moment().format('YYYYMMDDHHmmss'));
+
+                        consoleMessages = () => console.log(chalkPipe('orange.bold')(`
+                        Please edit the folloging file: ./src/db/models/${answers.sourceModel}.js by adding the following:
+                        -----------------------------------------
+                        ${sourceModelCapital}.associate = function(models) {
+                            ${sourceModelCapital}.belongsTo(models.${targetModelCapital});
+                        };
+                        -----------------------------------------
+                        `));
+                        return fs.writeFile(`./src/db/migrations/${timestamp}-add-${answers.sourceModel}-belongs-to-${answers.targetModel}-association.js`, associationMigrationTemplate({
+                            sourceModel: answers.sourceModel,
+                            targetModel: answers.targetModel,
+                        }));
+                    };
+                }
+
+                return new Listr([{
+                        title: 'Create migration file',
+                        task: task
+                    }, ])
+                    .run()
+                    .then(() => {
+                        consoleMessages();
+                        return Promise.resolve(true);
+                    });
+
             }).then(() => Promise.resolve(true));
         })
         .catch(e =>
