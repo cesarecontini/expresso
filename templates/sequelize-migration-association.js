@@ -2,9 +2,9 @@ const capitalize = require('capitalize');
 const pluralize = require('pluralize');
 
 module.exports = opts => {
-    const sourceModelSingular = capitalize(pluralize.singular(opts.sourceModel));
     const sourceModelPlural = capitalize(pluralize.plural(opts.sourceModel));
     const targetModelPlural = capitalize(pluralize.plural(opts.targetModel));
+    const sourceModelSingular = pluralize.singular(opts.sourceModel);
     const targetModelSingular = pluralize.singular(opts.targetModel);
     const associationType = opts.associationType;
 
@@ -37,7 +37,7 @@ module.exports = {
     }
 };
 `;
-    } else if (associationType === 'hasOne') {
+    } else if (associationType === 'hasOne' || associationType === 'hasMany') {
         return `
 'use strict';
 

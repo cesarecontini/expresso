@@ -64,7 +64,7 @@ const addSequelizeFiles = (
                 `create-${fileName}` :
                 `${fileName}-data`;
             let timestamp = parseInt(moment().format('YYYYMMDDHHmmss'));
-            fileName = `${timestamp + (i * 100)}-${fileNameSuffix}`;
+            fileName = `${timestamp + (i * 5)}-${fileNameSuffix}`;
         }
 
         const sequelizeFileName = `${targetDir}/${fileName}.js`;

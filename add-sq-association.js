@@ -84,22 +84,41 @@ const initProject = prog => {
         .then(() => {
             return inquirer.prompt([{
                     type: 'list',
+                    name: 'associationType',
+                    message: 'Please pick an association type',
+                    choices: ['belongsTo', 'hasOne', 'hasMany', 'belongsToMany']
+                },
+                {
+                    type: 'list',
                     name: 'sourceModel',
-                    message: 'Please pick a source model',
+                    message: (answers) => {
+                        if (answers.associationType === 'belongsTo') {
+                            return 'Please pick a source model i.e. <source model> BELONGS TO <target model>';
+                        } else if (answers.associationType === 'hasOne') {
+                            return 'Please pick a source model i.e. <source model> HAS ONE <target model>';
+                        } else if (answers.associationType === 'hasMany') {
+                            return 'Please pick a source model i.e. <source model> HAS MANY <target model>';
+                        }
+                        return 'Please pick a source model';
+                    },
                     choices: existingModels
                 },
                 {
                     type: 'list',
                     name: 'targetModel',
-                    message: 'Please pick a target model to associate to source model',
+                    message: (answers) => {
+                        if (answers.associationType === 'belongsTo') {
+                            return `Please pick a target model i.e. <${answers.sourceModel}> BELONGS TO  <target model>`;
+                        } else if (answers.associationType === 'hasOne') {
+                            return `Please pick a target model i.e. <${answers.sourceModel}> HAS ONE <target model>`;
+                        } else if (answers.associationType === 'hasMany') {
+                            return `Please pick a target model i.e. <${answers.sourceModel}> HAS MANY <target model>`;
+                        }
+                        return 'Please pick a target model';
+                    },
                     choices: existingModels
                 },
-                {
-                    type: 'list',
-                    name: 'associationType',
-                    message: 'Please pick an association type',
-                    choices: ['belongsTo', 'hasOne', 'hasMany', 'belongsToMany']
-                },
+
             ]).then(answers => {
 
                 if (answers.sourceModel === answers.targetModel) {
@@ -107,25 +126,31 @@ const initProject = prog => {
                 }
 
                 inquirerAnswers = answers;
-                console.log('==========>', inquirerAnswers);
 
                 let task;
                 let consoleMessages;
                 const sourceModelCapital = capitalize(pluralize.singular(answers.sourceModel));
                 const targetModelCapital = capitalize(pluralize.singular(answers.targetModel));
-                let timestamp = parseInt(moment().format('YYYYMMDDHHmmss'));
+                let timestamp = parseInt(moment().format('YYYYMMDDHHmmss')) + 5;
                 if (answers.associationType === 'belongsTo') {
                     task = () => {
-                        
+
+                        const fileName = `./src/db/migrations/${timestamp}-add-${answers.targetModel}-belongs-to-${answers.sourceModel}-association.js`;
+
                         consoleMessages = () => console.log(chalkPipe('orange.bold')(`
                         Please edit the folloging file: ./src/db/models/${answers.sourceModel}.js by adding the following:
                         -----------------------------------------
-                        ${sourceModelCapital}.associate = function(models) {
+                        ${sourceModelCapital}.associate = models => {
+                            // some associations.....
                             ${sourceModelCapital}.belongsTo(models.${targetModelCapital});
                         };
                         -----------------------------------------
+
+                        Migration file created: ${fileName}
+
                         `));
-                        return fs.writeFile(`./src/db/migrations/${timestamp}-add-${answers.sourceModel}-belongs-to-${answers.targetModel}-association.js`, associationMigrationTemplate({
+
+                        return fs.writeFile(fileName, associationMigrationTemplate({
                             sourceModel: answers.sourceModel,
                             targetModel: answers.targetModel,
                             associationType: answers.associationType
@@ -133,16 +158,45 @@ const initProject = prog => {
                     };
                 } else if (answers.associationType === 'hasOne') {
                     task = () => {
-                        
+
+                        const fileName = `./src/db/migrations/${timestamp}-add-${answers.sourceModel}-has-one-${answers.targetModel}-association.js`;
                         consoleMessages = () => console.log(chalkPipe('orange.bold')(`
                         Please edit the folloging file: ./src/db/models/${answers.sourceModel}.js by adding the following:
                         -----------------------------------------
-                        ${sourceModelCapital}.associate = function(models) {
+                        ${sourceModelCapital}.associate = models => {
+                            // some associations.....
                             ${sourceModelCapital}.hasOne(models.${targetModelCapital});
                         };
                         -----------------------------------------
+
+                        Migration file created: ${fileName}
+
                         `));
-                        return fs.writeFile(`./src/db/migrations/${timestamp}-add-${answers.sourceModel}-has-one-${answers.targetModel}-association.js`, associationMigrationTemplate({
+
+                        return fs.writeFile(fileName, associationMigrationTemplate({
+                            sourceModel: answers.sourceModel,
+                            targetModel: answers.targetModel,
+                            associationType: answers.associationType
+                        }));
+                    };
+                } else if (answers.associationType === 'hasMany') {
+                    task = () => {
+
+                        const fileName = `./src/db/migrations/${timestamp}-add-${answers.sourceModel}-has-many-${answers.targetModel}-association.js`;
+                        consoleMessages = () => console.log(chalkPipe('orange.bold')(`
+                        Please edit the folloging file: ./src/db/models/${answers.sourceModel}.js by adding the following:
+                        -----------------------------------------
+                        ${sourceModelCapital}.associate = models => {
+                            // some associations.....
+                            ${sourceModelCapital}.hasMany(models.${targetModelCapital});
+                        };
+                        -----------------------------------------
+
+                        Migration file created: ${fileName}
+                        
+                        `));
+
+                        return fs.writeFile(fileName, associationMigrationTemplate({
                             sourceModel: answers.sourceModel,
                             targetModel: answers.targetModel,
                             associationType: answers.associationType
@@ -150,10 +204,11 @@ const initProject = prog => {
                     };
                 }
 
-                return new Listr([{
-                        title: 'Create migration file',
-                        task: task
-                    }, ])
+                return new Listr(
+                        [{
+                            title: 'Create migration file',
+                            task: task
+                        }, ])
                     .run()
                     .then(() => {
                         consoleMessages();
@@ -165,20 +220,6 @@ const initProject = prog => {
         .catch(e =>
             console.log(chalkPipe('bgRed.#cccccc')('ERROR!!', e.message))
         );
-
-
-    // tasks
-    //     .run()
-    //     .then(() => {
-    //         console.log();
-    //         console.log(chalkPipe('orange.bold')('ALL DONE!'));
-    //         console.log(chalkPipe('orange.bold')('\n'))
-    //         console.log(chalkPipe('orange.bold')('We have created the following files: '))
-    //         filesAdded.forEach(f => console.log(chalkPipe('orange.bold')(f)));
-    //     })
-    //     .catch(e =>
-    //         console.log(chalkPipe('bgRed.#cccccc')('ERROR!!', e.message))
-    //     );
 };
 
 program
