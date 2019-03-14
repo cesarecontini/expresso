@@ -151,23 +151,64 @@ cd my-app
 Then run the **expresso-machine-add-api-endpoints** command followed by the **-l** option with a comma-separated list of endpoint domains to add to your project i.e.
 
 ```
-expresso-machine-add-api-endpoints -l
+expresso-machine-add-api-endpoints -l product,category
 ```
 
 **expresso-machine** will generate the following files within the **my-app** project directory:
 
 ./src/routers/route-products.js
+
 ./src/routers/route-categories.js
+
 ./src/db/models/product.js
+
 ./src/db/models/category.js
+
 ./src/db/seeders/20190305001941-product-data.js
+
 ./src/db/seeders/20190305002041-category-data.js
+
 ./src/db/migrations/20190305001941-create-product.js
+
 ./src/db/migrations/20190305002041-create-category.js
 
-./index.js will also be amended so the route will be added.
+./index.js
+
+will also be amended so the route will be added to the app.
 
 ![terminal screenshot](./assets/terminal-2.png)
+
+## 'expresso-machine-add-sq-association' CLI (alias 'em-add-sq-association')
+
+This very useful command creates migration files on the to create migration files to create association between tables. It does it interactively via the console in a very easy and comprehensive manner.
+
+Just cd in your expresso-machine generated project folder anr run:
+
+```
+expresso-machine-add-sq-association
+```
+
+And you'll get the following:
+
+![terminal screenshot](./assets/create-association.png)
+
+1. Basically you will be asked to pick one of the relationship types i.e.:
+
+* belongsTo 
+* hasOne 
+* hasMany 
+* belongsToMany 
+
+2. To pick a source model/table from the provided list
+3. To pick a target model/table from the provided list
+
+Expresso-machine will create a brand new sequelize migration file, so to apply it just run:
+
+```
+npm run migrate
+```
+
+And changes will be applied to the DB.
 
 ## NPM BUILT-IN COMMANDS IN GENERATED APP
 

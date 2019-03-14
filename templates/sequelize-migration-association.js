@@ -66,7 +66,51 @@ module.exports = {
     }
 };
 `;
+    } else if (associationType === 'belongsToMany') {
+        return `
+'use strict';
+
+module.exports = {
+    up: (queryInterface, Sequelize) => {
+        return queryInterface.createTable(
+        '${capitalize(sourceModelSingular)}${targetModelPlural}', {
+            createdAt: {
+                allowNull: false,
+                type: Sequelize.DATE,
+            },
+            updatedAt: {
+                allowNull: false,
+                type: Sequelize.DATE,
+            },
+            ${sourceModelSingular}Id: {
+                type: Sequelize.INTEGER,
+                allowNull: false,
+                primaryKey: true,
+                references: {
+                    model: '${sourceModelPlural}',
+                    key: 'id',
+                },
+                onUpdate: 'CASCADE',
+                onDelete: 'CASCADE',
+            },
+            ${targetModelSingular}Id: {
+                type: Sequelize.INTEGER,
+                allowNull: false,
+                primaryKey: true,
+                references: {
+                    model: '${targetModelPlural}',
+                    key: 'id',
+                },
+                onUpdate: 'CASCADE',
+                onDelete: 'CASCADE',
+            },
+        });
+    },
+    down: (queryInterface, Sequelize) => {
+        // remove table
+        return queryInterface.dropTable('${capitalize(sourceModelSingular)}${targetModelPlural}');
+    },
+};
+`;
     }
-
-
 };
