@@ -5,7 +5,6 @@ const chalkPipe = require('chalk-pipe');
 const fs = require('fs-extra');
 const pluralize = require('pluralize');
 const capitalize = require('capitalize');
-const validator = require('validator');
 const Listr = require('listr');
 const figlet = require('figlet');
 const moment = require('moment');
@@ -13,9 +12,7 @@ const inquirer = require('inquirer');
 
 const associationMigrationTemplate = require('./templates/sequelize-migration-association');
 
-let filesAdded = [];
 let existingModels = [];
-let inquirerAnswers = [];
 
 const pathExist = path => {
     return fs.pathExists(path).then(exists => {
@@ -28,7 +25,7 @@ const pathExist = path => {
     });
 };
 
-const initProject = prog => {
+const initProject = () => {
     console.log(
         chalkPipe('orange.bold')(
             '\nexpresso-machine is about to add a sequelize association....'
@@ -76,7 +73,7 @@ const initProject = prog => {
                     .readdir('./src/db/models')
                     .then(files => {
                         existingModels = files
-                            .filter(f => f != 'index.js')
+                            .filter(f => f !== 'index.js')
                             .map(f => f.replace(new RegExp('.js', 'g'), ''));
                     })
                     .then(() => Promise.resolve(true));
@@ -106,11 +103,17 @@ const initProject = prog => {
                         message: answers => {
                             if (answers.associationType === 'belongsTo') {
                                 return 'Please pick a source model i.e. <source model> BELONGS TO <target model>';
-                            } else if (answers.associationType === 'hasOne') {
+                            }
+
+                            if (answers.associationType === 'hasOne') {
                                 return 'Please pick a source model i.e. <source model> HAS ONE <target model>';
-                            } else if (answers.associationType === 'hasMany') {
+                            }
+
+                            if (answers.associationType === 'hasMany') {
                                 return 'Please pick a source model i.e. <source model> HAS MANY <target model>';
-                            } else if (answers.associationType === 'belongsToMany') {
+                            }
+
+                            if (answers.associationType === 'belongsToMany') {
                                 return 'Please pick a source model i.e. <source model> BELONGS TO MANY <target model>';
                             }
                             return 'Please pick a source model';
@@ -125,15 +128,21 @@ const initProject = prog => {
                                 return `Please pick a target model i.e. <${
                                     answers.sourceModel
                                 }> BELONGS TO  <target model>`;
-                            } else if (answers.associationType === 'hasOne') {
+                            }
+
+                            if (answers.associationType === 'hasOne') {
                                 return `Please pick a target model i.e. <${
                                     answers.sourceModel
                                 }> HAS ONE <target model>`;
-                            } else if (answers.associationType === 'hasMany') {
+                            }
+
+                            if (answers.associationType === 'hasMany') {
                                 return `Please pick a target model i.e. <${
                                     answers.sourceModel
                                 }> HAS MANY <target model>`;
-                            } else if (answers.associationType === 'belongsToMany') {
+                            }
+
+                            if (answers.associationType === 'belongsToMany') {
                                 return `Please pick a target model i.e. <${
                                     answers.sourceModel
                                 }> BELONGS TO MANY <target model>`;
@@ -150,8 +159,6 @@ const initProject = prog => {
                         );
                     }
 
-                    inquirerAnswers = answers;
-
                     let task;
                     let consoleMessages;
                     const sourceModelCapital = capitalize(
@@ -160,7 +167,7 @@ const initProject = prog => {
                     const targetModelCapital = capitalize(
                         pluralize.singular(answers.targetModel)
                     );
-                    let timestamp =
+                    const timestamp =
                         parseInt(moment().format('YYYYMMDDHHmmss')) + 5;
                     if (answers.associationType === 'belongsTo') {
                         task = () => {
@@ -311,7 +318,7 @@ const initProject = prog => {
                     return new Listr([
                         {
                             title: 'Create migration file',
-                            task: task,
+                            task,
                         },
                     ])
                         .run()
@@ -333,4 +340,4 @@ program
     .usage('')
     .parse(process.argv);
 
-initProject(program);
+initProject();

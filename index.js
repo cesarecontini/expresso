@@ -5,7 +5,6 @@ const chalkPipe = require('chalk-pipe');
 const fs = require('fs-extra');
 const rmdir = require('rmdir');
 const pluralize = require('pluralize');
-const validator = require('validator');
 const Listr = require('listr');
 const figlet = require('figlet');
 const moment = require('moment');
@@ -25,15 +24,9 @@ const sequelizeConfigJsonString = require('./templates/sequelize-config.json');
 const dockerString = require('./templates/docker');
 const dockerComposeString = require('./templates/docker-compose.yml');
 const gitIgnoreString = require('./templates/gitignore');
+const cliUtils = require('./utils/cli-utils');
 
-const list = val => {
-    if (!val) return [];
-    return val
-        .split(',')
-        .filter(v => v && v.length > 0 && validator.isAlpha(v))
-        .map(v => v.toLowerCase())
-        .map(v => v.replace(/ /g, ''));
-};
+const { list } = cliUtils;
 
 const addApiEndpoints = prog => {
     const routersDir = `./${prog.init}/src/routers`;
@@ -74,11 +67,11 @@ const addSequelizeFiles = (
         let fileName = pluralize.singular(modelName);
         if (isFilenameWithTimestampSuffix) {
             const fileNameSuffix =
-                targetDirPath === '/src/db/migrations' ?
-                `create-${fileName}` :
-                `${fileName}-data`;
-            let timestamp = parseInt(moment().format('YYYYMMDDHHmmss'));
-            fileName = `${timestamp + (i * 5)}-${fileNameSuffix}`;
+                targetDirPath === '/src/db/migrations'
+                    ? `create-${fileName}`
+                    : `${fileName}-data`;
+            const timestamp = parseInt(moment().format('YYYYMMDDHHmmss'));
+            fileName = `${timestamp + i * 5}-${fileNameSuffix}`;
         }
 
         promisesArray.push(
@@ -108,7 +101,8 @@ const initProject = prog => {
         console.log(chalkPipe('orange.bold')(data));
     });
 
-    const tasks = new Listr([{
+    const tasks = new Listr([
+        {
             title: 'Create project directory',
             task: () => fs.mkdir(prog.init),
         },
@@ -353,13 +347,8 @@ program
         list,
         ['product', 'category']
     )
-    .option(
-        '-a, --about',
-        'About expresso-machine cli'
-    )
+    .option('-a, --about', 'About expresso-machine cli')
     .parse(process.argv);
-
-
 
 if (program.about) {
     figlet(`expresso-machine`, (err, data) => {
@@ -369,7 +358,11 @@ if (program.about) {
             return;
         }
         console.log(chalkPipe('orange.bold')(''));
-        console.log(chalkPipe('orange.bold')('Brew an express(o) app within seconds with:'));
+        console.log(
+            chalkPipe('orange.bold')(
+                'Brew an express(o) app within seconds with:'
+            )
+        );
         console.log(chalkPipe('orange.bold')(data));
         console.log(chalkPipe('orange.bold')(''));
         console.log(chalkPipe('orange.bold')('(c) 2019 Cesare Giani Contini'));

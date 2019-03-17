@@ -1,6 +1,6 @@
 {
   "name": "expresso-machine",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "expresso-machine is cli app which generates a full express js application, including api endpoints, database/sequelize initial migrations, seeders, modules. It also create a dockerfile and docker-compose adjusted to the database dialect set.",
   "main": "index.js",
   "scripts": {
@@ -65,6 +65,7 @@
     "eslint-config-airbnb": "^17.1.0",
     "eslint-config-prettier": "^4.0.0",
     "eslint-plugin-import": "^2.16.0",
+    "eslint-plugin-jest": "^22.4.1",
     "eslint-plugin-jsx-a11y": "^6.2.1",
     "eslint-plugin-prettier": "^3.0.1",
     "eslint-plugin-react": "^7.12.4",
