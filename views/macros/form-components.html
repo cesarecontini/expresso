@@ -1,0 +1,42 @@
+{% macro formComponent(opts) %}
+
+    {% if opts.type === 'text' %}
+        <div class="form-group">
+            <label for="{{opts.id}}">{{opts.label}}</label>
+            <input type="text" 
+                name="{{opts.id}}"
+                class="form-control" id="{{opts.id}}" aria-describedby="{{opts.id}}-help" placeholder="{{opts.placeholder}}" />
+            {% if opts.helpText %}<small id="{{opts.id}}-help" class="form-text text-muted">{{opts.helpText}}</small>{% endif %}
+        </div>
+    {% if opts.type === 'select' %}
+        <div class="form-group">
+            <label for="{{opts.id}}">{{opts.label}}</label>
+            <select class="form-control" id="{{opts.id}}">
+                {% for option in opts.options %}
+                    <option value="{{option.value}}">{{option.label}}</option>
+                {% endfor %}
+            </select>
+            {% if opts.helpText %}<small id="{{opts.id}}-help" class="form-text text-muted">{{opts.helpText}}</small>{% endif %}
+        </div>
+    {% if opts.type === 'checkbox' %}
+        {% for option in opts.options %}
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="{{option.value}}" id="{{opts.id}}{{loop.index}}">
+                <label class="form-check-label" for="{{opts.id}}{{loop.index}}">
+                    {{option.label}}
+                </label>
+            </div>
+        {% endfor %}
+    {% if opts.type === 'radio' %}
+        {% for option in opts.options %}
+            <div class="form-check">
+                <input class="form-check-input" type="radio" value="{{option.value}}" id="{{opts.id}}{{loop.index}}">
+                <label class="form-check-label" for="{{opts.id}}{{loop.index}}">
+                    {{option.label}}
+                </label>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+
+{% endmacro %}

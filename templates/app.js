@@ -4,7 +4,9 @@ const requireRouterModules = routers => {
     return routers
         .map(
             r =>
-            `const route${capitalize(r)} = require('./src/routers/route-${r}');`
+                `const route${capitalize(
+                    r
+                )} = require('./src/routers/route-${r}');`
         )
         .join('\n');
 };
@@ -13,7 +15,7 @@ const addRouterModules = routers => {
     return routers
         .map(
             r =>
-            `app.use('/${r}', passport.authenticate('jwt', { session: false }), route${capitalize(
+                `app.use('/${r}', passport.authenticate('jwt', { session: false }), route${capitalize(
                     r
                 )});`
         )
@@ -25,9 +27,14 @@ module.exports = opts => {
 ${requireRouterModules(opts.routersList)}
 const express = require('express');
 const helmet = require('helmet');
+const compression = require('compression');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 const passport = require('passport');
+const csrf = require('csurf');
 const pino = require('express-pino-logger')();
+const expressNunjucks = require('express-nunjucks');
+const path = require('path');
 
 const passportLocalStrategy = require('./src/services/passportStrategiesService');
 
@@ -36,22 +43,38 @@ const { port } = settings;
 
 passportLocalStrategy(passport);
 
+const csrfProtection = csrf({ cookie: true });
+const parseForm = bodyParser.urlencoded({ extended: true });
+
 const app = express();
 app.use(pino);
 app.use(helmet());
+app.use(compression());
+app.use(cookieParser());
 app.use(bodyParser.json());
-app.use(
-    bodyParser.urlencoded({
-        extended: true,
-    })
-);
+
+app.use('/public', express.static('public'));
+app.set('views', path.join('views'));
+let njk = expressNunjucks(app, {
+    watch: true,
+    noCache: true,
+    globals: {
+        // ADD GLOBAL VARIABLES HERE
+    }
+});
+
+app.use(parseForm);
 
 const authRouter = require('./src/routers/auth-route');
 app.use('/auth', authRouter);
 
 ${addRouterModules(opts.routersList)}
 
+app.get('/', (req, res) => res.render('home', {}));
+app.get('/about', (req, res) => res.render('about', {}));
+
 app.listen(port, () => console.log('Example app listening on port', port));
+app.get('/about', (req, res) => res.render('about', {}));
 
 `;
 };

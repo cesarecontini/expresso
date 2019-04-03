@@ -42,9 +42,7 @@ module.exports = opts => {
         "seed": "docker exec -it ${
             opts.appName
         }_web_1 ./node_modules/.bin/sequelize db:seed:all",
-        "go-into-container": "docker exec -it ${
-            opts.appName
-        }_web_1 /bin/ash",
+        "go-into-container": "docker exec -it ${opts.appName}_web_1 /bin/ash",
         "npminstall-and-start": "yarn install && yarn run debug",
         "init": "docker-compose build && docker-compose up",
         "init-db": "npm-run-all migrate seed",
@@ -56,13 +54,18 @@ module.exports = opts => {
         ${dbDependencies}
         "bcryptjs": "^2.4.3",
         "body-parser": "^1.18.3",
+        "cookie-parser": "^1.4.4",
         "chalk-pipe": "^2.0.0",
+        "compression": "^1.7.4",
+        "csurf": "^1.9.0",
         "commander": "^2.19.0",
         "express": "^4.16.4",
+        "express-nunjucks": "^2.2.3",
         "express-pino-logger": "^4.0.0",
         "fs-extra": "^7.0.1",
         "helmet": "^3.15.0",
         "jsonwebtoken": "^8.4.0",
+        "nunjucks": "^3.2.0",
         "passport": "^0.4.0",
         "passport-jwt": "^4.0.0",
         "passport-local": "^1.0.0",

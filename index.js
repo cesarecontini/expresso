@@ -275,7 +275,23 @@ const initProject = prog => {
             task: () =>
                 fs.copy(
                     `${pathToExpressoMachine}/addons/jest/test`,
-                    `${projectDirName}`
+                    `${projectDirName}/test`
+                ),
+        },
+        {
+            title: 'Create views folder',
+            task: () =>
+                fs.copy(
+                    `${pathToExpressoMachine}/views`,
+                    `${projectDirName}/views`
+                ),
+        },
+        {
+            title: 'Create public folder',
+            task: () =>
+                fs.copy(
+                    `${pathToExpressoMachine}/addons/public`,
+                    `${projectDirName}/public`
                 ),
         },
     ]);
