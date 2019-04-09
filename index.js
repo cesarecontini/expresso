@@ -70,7 +70,7 @@ const addSequelizeFiles = (
                 targetDirPath === '/src/db/migrations'
                     ? `create-${fileName}`
                     : `${fileName}-data`;
-            const timestamp = parseInt(moment().format('YYYYMMDDHHmmss'));
+            const timestamp = Number(moment().format('YYYYMMDDHHmmss'));
             fileName = `${timestamp + i * 5}-${fileNameSuffix}`;
         }
 
@@ -334,7 +334,7 @@ const initProject = prog => {
 
 program
     .version('0.1.0')
-    .name('expresso')
+    .name('expresso-machine')
     .usage('-i my-app l- product,category')
     .option(
         '-i, --init <projectname>',

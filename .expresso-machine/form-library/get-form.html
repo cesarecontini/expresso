@@ -1,0 +1,6 @@
+{% import "./form-components.html" as fc %}
+<form>
+    {% for field in fields %}
+        {{ fc.getElement(field) }}
+    {% endfor %}
+</form>

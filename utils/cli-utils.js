@@ -1,5 +1,8 @@
 const validator = require('validator');
 const fs = require('fs-extra');
+const moment = require('moment');
+
+const getFormattedDateAsInt = () => Number(moment().format('YYYYMMDDHHmmss'));
 
 const list = val => {
     if (!val) return [];
@@ -21,7 +24,33 @@ const pathExist = path => {
     });
 };
 
+const addToNotes = notesArray => {
+    const noteFileName = './expresso-machine-notes.txt';
+    fs.exists(noteFileName)
+        .then(exists => {
+            if (exists) {
+                return fs
+                    .readFile('./index.js')
+                    .then(file => file.toString().split('\n'));
+            }
+            return fs.writeFile(noteFileName, '').then(() => ['\n']);
+        })
+        .then(fileBits => {
+            notesArray.forEach(note => {
+                fileBits.push(
+                    `==================================== NOTE ADDED ${getFormattedDateAsInt()}
+                     ==========================================================================
+                     ${note}
+                    `
+                );
+            });
+
+            return fs.writeFile(noteFileName, fileBits.join('\n').toString());
+        });
+};
+
 module.exports = {
     list,
     pathExist,
+    addToNotes,
 };
