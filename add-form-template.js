@@ -6,9 +6,34 @@ const Listr = require('listr');
 const figlet = require('figlet');
 const nunjucks = require('nunjucks');
 const beautifyHtml = require('js-beautify').html;
+const S = require('string');
 const cliUtils = require('./utils/cli-utils');
 
-const getHtml = () => {
+const getFieldsArray = elementsUserInput => {
+    const elements = S(elementsUserInput).stripLeft(',');
+    const fields = [];
+    elements.forEach(element => {
+        if (S(element).contains('|')) {
+            const bits = S(element).splitLeft('|');
+            const field = {};
+            let type;
+            let id;
+            let label;
+            let helpText;
+            let options;
+            if (bits.length === 2) {
+                [type, id] = bits;
+                field.type = type;
+                field.id = S(id).dasherize().s;
+                field.label = S(id).humanize().s;
+            }
+
+            fields.push(field);
+        }
+    });
+};
+
+const getHtml = fieldsArray => {
     const html = nunjucks.render(
         './.expresso-machine/form-library/get-form.html',
         {
@@ -45,7 +70,7 @@ program
     )
     .option(
         '-e, --elements <formElements>',
-        'A list form elements <formElements>, comma-separated [element type]|[label camelcase name] list i.e. text|firstName, text|lastName'
+        'A list form elements <formElements>, comma-separated [element type]|[label camelcase name] list i.e. text|firstName,text|lastName'
     )
     .option('-a, --about', 'About expresso-machine-add-form-template cli')
     .parse(process.argv);
@@ -66,4 +91,4 @@ if (program.about) {
     });
 }
 
-console.log(program)
+console.log(program);
