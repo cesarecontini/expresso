@@ -10,46 +10,32 @@ const S = require('string');
 const cliUtils = require('./utils/cli-utils');
 
 const getFieldsArray = elementsUserInput => {
-    const elements = S(elementsUserInput).stripLeft(',');
+    const elements = S(elementsUserInput).splitLeft(',');
     const fields = [];
     elements.forEach(element => {
         if (S(element).contains('|')) {
             const bits = S(element).splitLeft('|');
             const field = {};
-            let type;
-            let id;
-            let label;
-            let helpText;
-            let options;
-            if (bits.length === 2) {
-                [type, id] = bits;
-                field.type = type;
-                field.id = S(id).dasherize().s;
-                field.label = S(id).humanize().s;
-            }
-
+            const [type, id, helpText, options] = bits;
+            field.type = type;
+            field.id = S(id).dasherize().s;
+            field.label = S(id).humanize().s;
+            if (helpText) field.helpText = S(helpText).humanize().s;
+            if (options) field.options = S(options).splitLeft(':');
             fields.push(field);
         }
     });
+    console.log('fields________', fields)
+    return fields;
 };
 
-const getHtml = fieldsArray => {
+const getHtml = opts => {
     const html = nunjucks.render(
         './.expresso-machine/form-library/get-form.html',
         {
-            fields: [
-                {
-                    type: 'text',
-                    id: 'name',
-                    label: 'Name',
-                    helpText: 'Some help please',
-                },
-                {
-                    type: 'text',
-                    id: 'fox',
-                    label: 'Fox',
-                },
-            ],
+            action: opts.formAction,
+            method: opts.method,
+            fields: opts.elements,
         }
     );
     console.log(beautifyHtml(html.replace(/\n\s*\n\s*\n/g, '\n\n')));
@@ -58,7 +44,9 @@ const getHtml = fieldsArray => {
 program
     .version('0.1.0')
     .name('expresso-machine-add-form-template')
-    .usage('-f /some/path l- product,category')
+    .usage(
+        '-f /some/path -m post -e "text|firstName|Please enter your first name,text|lastName,radio|gender|male:female"'
+    )
     .option(
         '-f, --formAction <formAction>',
         'Sets the form action to <formAction>'
@@ -91,4 +79,13 @@ if (program.about) {
     });
 }
 
-console.log(program);
+if (program.formAction && program.method && program.elements) {
+    getHtml({
+        formAction: program.formAction,
+        method: program.method,
+        elements: getFieldsArray(program.elements),
+    });
+}
+
+// console.log(program);
+// console.log(getFieldsArray(program.elements));

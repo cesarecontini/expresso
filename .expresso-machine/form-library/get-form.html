@@ -1,6 +1,7 @@
 {% import "./form-components.html" as fc %}
-<form>
+<form method="{{method}}" action="{{action}}">
     {% for field in fields %}
+        {{ field.type }} {{ field.options }}
         {{ fc.getElement(field) }}
     {% endfor %}
 </form>

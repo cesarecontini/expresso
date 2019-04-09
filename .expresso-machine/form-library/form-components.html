@@ -19,28 +19,27 @@
                 {% endfor %}
             </select>
             {% if opts.helpText %}<small id="{{opts.id}}-help" class="form-text text-muted">{{opts.helpText}}</small>{% endif %}
-        </div>
+        </div>  
     {% elif opts.type === 'checkbox' %}
+        {{opts.options}}
         {% for option in opts.options %}
-            <div class="form-check">
-                <input 
-                    class="form-check-input" 
-                    type="checkbox" value="{{option.value}}" id="{{opts.id}}{{loop.index}}"
-                    {% if option.value === opts.value %}checked{% endif %}>
+            <div class="form-group form-check">
+                <input
+                    class="form-check-input"
+                    type="checkbox" value="{{option}}" id="{{opts.id}}{{loop.index}}">
                 <label class="form-check-label" for="{{opts.id}}{{loop.index}}">
-                    {{option.label}}
+                    {{option}}
                 </label>
             </div>
         {% endfor %}
     {% elif opts.type === 'radio' %}
         {% for option in opts.options %}
-            <div class="form-check">
+            <div class="form-group form-check">
                 <input
                     class="form-check-input"
-                    type="radio" value="{{option.value}}" id="{{opts.id}}{{loop.index}}"
-                    {% if option.value === opts.value %}checked{% endif %}>
+                    type="radio" value="{{option}}" id="{{opts.id}}{{loop.index}}">
                 <label class="form-check-label" for="{{opts.id}}{{loop.index}}">
-                    {{option.label}}
+                    {{option}}
                 </label>
             </div>
         {% endfor %}
