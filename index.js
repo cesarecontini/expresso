@@ -294,6 +294,14 @@ const initProject = prog => {
                     `${projectDirName}/public`
                 ),
         },
+        {
+            title: 'Create .expresso-machine library folder',
+            task: () =>
+                fs.copy(
+                    `${pathToExpressoMachine}/.expresso-machine`,
+                    `${projectDirName}/.expresso-machine`
+                ),
+        },
     ]);
 
     tasks

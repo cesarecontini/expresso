@@ -7,8 +7,9 @@ const pluralize = require('pluralize');
 const capitalize = require('capitalize');
 const Listr = require('listr');
 const figlet = require('figlet');
-const moment = require('moment');
 const inquirer = require('inquirer');
+
+const { getFormattedDateAsInt, addToNotes } = require('./utils/cli-utils');
 
 const associationMigrationTemplate = require('./templates/sequelize-migration-association');
 
@@ -160,38 +161,34 @@ const initProject = () => {
                     }
 
                     let task;
-                    let consoleMessages;
+                    let getConsoleMessage;
                     const sourceModelCapital = capitalize(
                         pluralize.singular(answers.sourceModel)
                     );
                     const targetModelCapital = capitalize(
                         pluralize.singular(answers.targetModel)
                     );
-                    const timestamp =
-                        parseInt(moment().format('YYYYMMDDHHmmss')) + 5;
+                    const timestamp = getFormattedDateAsInt() + 5;
                     if (answers.associationType === 'belongsTo') {
                         task = () => {
                             const fileName = `./src/db/migrations/${timestamp}-add-${
                                 answers.targetModel
                             }-belongs-to-${answers.sourceModel}-association.js`;
 
-                            consoleMessages = () =>
-                                console.log(
-                                    chalkPipe('orange.bold')(`
-                        Please edit the folloging file: ./src/db/models/${
-                            answers.sourceModel
-                        }.js by adding the following:
-                        -----------------------------------------
-                        ${sourceModelCapital}.associate = models => {
-                            // some associations.....
-                            ${sourceModelCapital}.belongsTo(models.${targetModelCapital});
-                        };
-                        -----------------------------------------
+                            getConsoleMessage = () => `
+                                Please edit the folloging file: ./src/db/models/${
+                                    answers.sourceModel
+                                }.js by adding the following:
+                                -----------------------------------------
+                                ${sourceModelCapital}.associate = models => {
+                                    // some associations.....
+                                    ${sourceModelCapital}.belongsTo(models.${targetModelCapital});
+                                };
+                                -----------------------------------------
 
-                        Migration file created: ${fileName}
+                                Migration file created: ${fileName}
 
-                        `)
-                                );
+                            `;
 
                             return fs.writeFile(
                                 fileName,
@@ -207,23 +204,20 @@ const initProject = () => {
                             const fileName = `./src/db/migrations/${timestamp}-add-${
                                 answers.sourceModel
                             }-has-one-${answers.targetModel}-association.js`;
-                            consoleMessages = () =>
-                                console.log(
-                                    chalkPipe('orange.bold')(`
-                        Please edit the folloging file: ./src/db/models/${
-                            answers.sourceModel
-                        }.js by adding the following:
-                        -----------------------------------------
-                        ${sourceModelCapital}.associate = models => {
-                            // some associations.....
-                            ${sourceModelCapital}.hasOne(models.${targetModelCapital});
-                        };
-                        -----------------------------------------
+                            getConsoleMessage = () => `
+                                Please edit the folloging file: ./src/db/models/${
+                                    answers.sourceModel
+                                }.js by adding the following:
+                                -----------------------------------------
+                                ${sourceModelCapital}.associate = models => {
+                                    // some associations.....
+                                    ${sourceModelCapital}.hasOne(models.${targetModelCapital});
+                                };
+                                -----------------------------------------
 
-                        Migration file created: ${fileName}
+                                Migration file created: ${fileName}
 
-                        `)
-                                );
+                                `;
 
                             return fs.writeFile(
                                 fileName,
@@ -240,24 +234,21 @@ const initProject = () => {
                                 answers.sourceModel
                             }-has-many-${answers.targetModel}-association.js`;
 
-                            consoleMessages = () =>
-                                console.log(
-                                    chalkPipe('orange.bold')(`
-                        Please edit the folloging file: ./src/db/models/${
-                            answers.sourceModel
-                        }.js by adding the following:
-                        -----------------------------------------
-                        
-                        ${sourceModelCapital}.associate = models => {
-                            // some associations.....
-                            ${sourceModelCapital}.hasMany(models.${targetModelCapital});
-                        };
-                        -----------------------------------------
+                            getConsoleMessage = () => `
+                                Please edit the folloging file: ./src/db/models/${
+                                    answers.sourceModel
+                                }.js by adding the following:
+                                -----------------------------------------
+                                
+                                ${sourceModelCapital}.associate = models => {
+                                    // some associations.....
+                                    ${sourceModelCapital}.hasMany(models.${targetModelCapital});
+                                };
+                                -----------------------------------------
 
-                        Migration file created: ${fileName}
-                        
-                        `)
-                                );
+                                Migration file created: ${fileName}
+                                
+                                `;
 
                             return fs.writeFile(
                                 fileName,
@@ -276,33 +267,30 @@ const initProject = () => {
                                 answers.targetModel
                             }-association.js`;
 
-                            consoleMessages = () =>
-                                console.log(
-                                    chalkPipe('orange.bold')(`
-                        Please edit the folloging file: ./src/db/models/${
-                            answers.sourceModel
-                        }.js by adding the following:
-                        -----------------------------------------
-                        ${sourceModelCapital}.associate = models => {
-                            // some associations.....
-                            ${sourceModelCapital}.hasMany(models.${targetModelCapital});
-                        };
-                        -----------------------------------------
+                            getConsoleMessage = () => `
+                                Please edit the folloging file: ./src/db/models/${
+                                    answers.sourceModel
+                                }.js by adding the following:
+                                -----------------------------------------
+                                ${sourceModelCapital}.associate = models => {
+                                    // some associations.....
+                                    ${sourceModelCapital}.hasMany(models.${targetModelCapital});
+                                };
+                                -----------------------------------------
 
-                        Please edit the folloging file: ./src/db/models/${
-                            answers.targetModel
-                        }.js by adding the following:
-                        -----------------------------------------
-                        ${targetModelCapital}.associate = models => {
-                            // some associations.....
-                            ${targetModelCapital}.hasMany(models.${sourceModelCapital});
-                        };
-                        -----------------------------------------
+                                Please edit the folloging file: ./src/db/models/${
+                                    answers.targetModel
+                                }.js by adding the following:
+                                -----------------------------------------
+                                ${targetModelCapital}.associate = models => {
+                                    // some associations.....
+                                    ${targetModelCapital}.hasMany(models.${sourceModelCapital});
+                                };
+                                -----------------------------------------
 
-                        Migration file created: ${fileName}
-                        
-                        `)
-                                );
+                                Migration file created: ${fileName}
+                                
+                                `;
 
                             return fs.writeFile(
                                 fileName,
@@ -323,7 +311,14 @@ const initProject = () => {
                     ])
                         .run()
                         .then(() => {
-                            consoleMessages();
+                            const htmlMessage = getConsoleMessage();
+                            console.log(chalkPipe('orange.bold')(htmlMessage));
+                            addToNotes([
+                                {
+                                    title: 'Adding sequelize association',
+                                    text: htmlMessage,
+                                },
+                            ]);
                             return Promise.resolve(true);
                         });
                 })

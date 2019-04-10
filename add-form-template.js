@@ -5,9 +5,10 @@ const chalkPipe = require('chalk-pipe');
 const Listr = require('listr');
 const figlet = require('figlet');
 const nunjucks = require('nunjucks');
-const beautifyHtml = require('js-beautify').html;
 const S = require('string');
 const cliUtils = require('./utils/cli-utils');
+
+const { addToNotes, getBeautifiedHtml } = cliUtils;
 
 const getFieldsArray = elementsUserInput => {
     const elements = S(elementsUserInput).splitLeft(',');
@@ -25,7 +26,7 @@ const getFieldsArray = elementsUserInput => {
             fields.push(field);
         }
     });
-    console.log('fields________', fields)
+    // console.log('fields________', fields)
     return fields;
 };
 
@@ -38,7 +39,7 @@ const getHtml = opts => {
             fields: opts.elements,
         }
     );
-    console.log(beautifyHtml(html.replace(/\n\s*\n\s*\n/g, '\n\n')));
+    return getBeautifiedHtml(html);
 };
 
 program
@@ -80,11 +81,19 @@ if (program.about) {
 }
 
 if (program.formAction && program.method && program.elements) {
-    getHtml({
+    const html = getHtml({
         formAction: program.formAction,
         method: program.method,
         elements: getFieldsArray(program.elements),
     });
+
+    console.log(html);
+    addToNotes([
+        {
+            title: 'Creating form template',
+            text: html,
+        },
+    ]);
 }
 
 // console.log(program);

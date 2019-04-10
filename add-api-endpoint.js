@@ -7,7 +7,6 @@ const pluralize = require('pluralize');
 const capitalize = require('capitalize');
 const Listr = require('listr');
 const figlet = require('figlet');
-const moment = require('moment');
 
 const apiRouterString = require('./templates/api-router');
 const sequelizeModelString = require('./templates/sequelize-model');
@@ -17,7 +16,7 @@ const cliUtils = require('./utils/cli-utils');
 
 const filesAdded = [];
 
-const { list, pathExist } = cliUtils;
+const { list, pathExist, getFormattedDateAsInt } = cliUtils;
 
 const addApiEndpoints = prog => {
     const routersDir = `./src/routers`;
@@ -56,7 +55,7 @@ const addSequelizeFiles = (
                 targetDirPath === '/src/db/migrations'
                     ? `create-${fileName}`
                     : `${fileName}-data`;
-            const timestamp = parseInt(moment().format('YYYYMMDDHHmmss'));
+            const timestamp = getFormattedDateAsInt();
             fileName = `${timestamp + i * 5}-${fileNameSuffix}`;
         }
 

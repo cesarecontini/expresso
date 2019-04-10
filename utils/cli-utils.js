@@ -1,8 +1,11 @@
 const validator = require('validator');
 const fs = require('fs-extra');
 const moment = require('moment');
+const beautifyHtml = require('js-beautify').html;
 
 const getFormattedDateAsInt = () => Number(moment().format('YYYYMMDDHHmmss'));
+const getBeautifiedHtml = html =>
+    beautifyHtml(html.replace(/\n\s*\n\s*\n/g, '\n\n'));
 
 const list = val => {
     if (!val) return [];
@@ -30,7 +33,7 @@ const addToNotes = notesArray => {
         .then(exists => {
             if (exists) {
                 return fs
-                    .readFile('./index.js')
+                    .readFile(noteFileName)
                     .then(file => file.toString().split('\n'));
             }
             return fs.writeFile(noteFileName, '').then(() => ['\n']);
@@ -40,11 +43,16 @@ const addToNotes = notesArray => {
                 fileBits.push(
                     `==================================== NOTE ADDED ${getFormattedDateAsInt()}
                      ==========================================================================
-                     ${note}
+                     === ${note.title}
+                     
+                     ${note.text}
+                     
+                     === ${note.title}
+                     ==================================== NOTE ADDED ${getFormattedDateAsInt()}
+                     ==========================================================================
                     `
                 );
             });
-
             return fs.writeFile(noteFileName, fileBits.join('\n').toString());
         });
 };
@@ -53,4 +61,6 @@ module.exports = {
     list,
     pathExist,
     addToNotes,
+    getBeautifiedHtml,
+    getFormattedDateAsInt,
 };

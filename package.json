@@ -28,9 +28,11 @@
     "expresso-machine": "bin/expresso-machine",
     "expresso-machine-add-api-endpoints": "bin/expresso-machine-add-api-endpoints",
     "expresso-machine-add-sq-association": "bin/expresso-machine-add-sq-association",
+    "expresso-machine-add-form-template": "bin/expresso-machine-add-form-template",
     "em": "bin/expresso-machine",
     "em-add-api-endpoints": "bin/expresso-machine-add-api-endpoints",
-    "em-add-sq-association": "bin/expresso-machine-add-sq-association"
+    "em-add-sq-association": "bin/expresso-machine-add-sq-association",
+    "em-add-form-template": "bin/expresso-machine-add-form-template"
   },
   "dependencies": {
     "bcrypt": "^3.0.4",

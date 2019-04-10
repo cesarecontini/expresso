@@ -1,13 +1,22 @@
-{% macro ok(opts) %}{{'{{form.' + opts.id + '}}'}}{% endmacro %}
-
 {% macro getElement(opts) %}
     {% if opts.type === 'text' %}
         <div class="form-group">
             <label for="{{opts.id}}">{{opts.label}}</label>
             <input type="text" 
                 name="{{opts.id}}"
-                value="{{ ok(opts) }}"
+                value=""
                 class="form-control" id="{{opts.id}}" aria-describedby="{{opts.id}}-help" placeholder="{{opts.placeholder}}" />
+            {% if opts.helpText %}<small id="{{opts.id}}-help" class="form-text text-muted">{{opts.helpText}}</small>{% endif %}
+        </div>
+    {% elif opts.type === 'textarea' %}
+        <div class="form-group">
+            <label for="{{opts.id}}">{{opts.label}}</label>
+            <textarea type="text" 
+                name="{{opts.id}}"
+                value=""
+                class="form-control" id="{{opts.id}}"
+                rows="5"
+                placeholder="{{opts.placeholder}}"></textarea>
             {% if opts.helpText %}<small id="{{opts.id}}-help" class="form-text text-muted">{{opts.helpText}}</small>{% endif %}
         </div>
     {% elif opts.type === 'select' %}
@@ -15,15 +24,16 @@
             <label for="{{opts.id}}">{{opts.label}}</label>
             <select class="form-control" id="{{opts.id}}">
                 {% for option in opts.options %}
-                    <option value="{{option.value}}" {% if option.value === opts.value %}selected{% endif %}>{{option.label}}</option>
+                    <option value="{{option}}">{{option}}</option>
                 {% endfor %}
             </select>
             {% if opts.helpText %}<small id="{{opts.id}}-help" class="form-text text-muted">{{opts.helpText}}</small>{% endif %}
-        </div>  
+        </div>
+         {% if opts.helpText %}<small id="{{opts.id}}-help" class="form-text text-muted">{{opts.helpText}}</small>{% endif %}
     {% elif opts.type === 'checkbox' %}
-        {{opts.options}}
+        <div class="form-group">
         {% for option in opts.options %}
-            <div class="form-group form-check">
+            <div class="form-check">
                 <input
                     class="form-check-input"
                     type="checkbox" value="{{option}}" id="{{opts.id}}{{loop.index}}">
@@ -32,7 +42,10 @@
                 </label>
             </div>
         {% endfor %}
+        </div>
+         {% if opts.helpText %}<small id="{{opts.id}}-help" class="form-text text-muted">{{opts.helpText}}</small>{% endif %}
     {% elif opts.type === 'radio' %}
+        <div class="form-group">
         {% for option in opts.options %}
             <div class="form-group form-check">
                 <input
@@ -43,5 +56,7 @@
                 </label>
             </div>
         {% endfor %}
+        </div>
+         {% if opts.helpText %}<small id="{{opts.id}}-help" class="form-text text-muted">{{opts.helpText}}</small>{% endif %}
     {% endif %}
 {% endmacro %}
