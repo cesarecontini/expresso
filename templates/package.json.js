@@ -70,7 +70,7 @@ module.exports = opts => {
         "passport-jwt": "^4.0.0",
         "passport-local": "^1.0.0",
         "rmdir": "^1.2.0",
-        "sequelize": "^4.42.0",
+        "sequelize": "^5.3.1",
         "sequelize-cli": "^5.4.0",
         "validate": "^4.5.1",
         "validator": "^10.11.0"

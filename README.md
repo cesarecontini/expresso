@@ -19,6 +19,7 @@ Expresso-machine is a CLI utility to generate an express js app featuring:
 -   prettier configuration
 -   'expresso-machine' (alias 'em') command line interface to generate a brand new application express-app
 -   'expresso-machine-add-api-endpoints' (alias 'em-add-api-endpoints') cli to add extra endpoints to an existing project (api implementation, JWT protection and Sequelize models/migration/seeder files)
+-   'expresso-machine-add-sq-association' CLI (alias 'em-add-sq-association') to create an extra sql association between tables
 
 ### PRE-REQUISITES
 
@@ -125,7 +126,7 @@ Copy the the token and include it in an authorization header key and hit the GET
 
 ## 'expresso-machine-add-api-endpoints' CLI (alias 'em-add-api-endpoints')
 
-When you install **expresso-machine** another command will be made available globally: **expresso-machine-add-api-endpoints** or **em-add-api-endpoints**
+When you install **expresso-machine** another set of CLI command will be made available globally: **expresso-machine-add-api-endpoints** (alias **em-add-api-endpoints**) and **expresso-machine-add-sq-association**  (alias **em-add-sq-association**)
 
 Check it out:
 
@@ -225,8 +226,12 @@ And changes will be applied to the DB.
 -   **npm run seed** - runs the `docker exec -it my-app_web_1 ./node_modules/.bin/sequelize db:seed:all` from host OS into container and performs SEQUELIZE database seed operation
 -   **npm run go-into-container** - runs the `docker exec -it my-app_web_1 /bin/ash` to log into the docker container via shell
 
+## NUNJUCKS TEMPLATES
+
+When **expresso-machine** generates an application it also creates a couple of nunjucks templates in the ./views folder as well as a base template using bootstrap.
+
 ## TO DO
 
 ```
-* Adding a facility to the **expresso-machine** to also add templates (i.e. nunjucks or other template engines) and an extra CLI to add extra routes & templates.
+* Adding an extra CLI to dynamically add extra routes & templates.
 ```
