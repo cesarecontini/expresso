@@ -26,7 +26,7 @@ const validationSchema = {
 };
 
 // middleware that is specific to this router
-router.use(function timeLog(req, res, next) {
+router.use((req, res, next) => {
     next();
 });
 
@@ -37,7 +37,7 @@ router.get('/', (req, res) => {
         .catch(e => res.status(500).send(e.message));
 });
 
-router.get('/:id', (req, res) => {
+router.get('/:id([0-9]+)', (req, res) => {
     apiServices
         .findOne(req.params.id, '${modelSingular}')
         .then(rec => {
@@ -51,8 +51,11 @@ router.get('/:id', (req, res) => {
 });
 
 router.post('/', validatorMiddleware('${modelSingular.toLowerCase()}', validationSchema), (req, res) => {
+    
+    const ${modelSingular.toLowerCase()} = req.body.${modelSingular.toLowerCase()};
+    
     apiServices
-        .createOne(req.body.${modelSingular.toLowerCase()}, '${modelSingular}')
+        .createOne(${modelSingular.toLowerCase()}, '${modelSingular}')
         .then(rec => {
             if (!rec) {
                 res.status(404).send({});
@@ -63,9 +66,12 @@ router.post('/', validatorMiddleware('${modelSingular.toLowerCase()}', validatio
         .catch(e => res.status(500).send(e.message));
 });
 
-router.put('/:id',  validatorMiddleware('${modelSingular.toLowerCase()}', validationSchema), (req, res) => {
+router.put('/:id([0-9]+)',  validatorMiddleware('${modelSingular.toLowerCase()}', validationSchema), (req, res) => {
+
+    const ${modelSingular.toLowerCase()} = req.body.${modelSingular.toLowerCase()};
+
     apiServices
-        .updateOne(req.body.${modelSingular.toLowerCase()}, req.body.id, '${modelSingular}')
+        .updateOne(${modelSingular.toLowerCase()}, req.params.id, '${modelSingular}')
         .then(rec => {
             if (!rec) {
                 res.status(404).send({});
@@ -76,7 +82,7 @@ router.put('/:id',  validatorMiddleware('${modelSingular.toLowerCase()}', valida
         .catch(e => res.status(500).send(e.message));
 });    
 
-router.delete('/:id', (req, res) => {
+router.delete('/:id([0-9]+)', (req, res) => {
     apiServices
         .destroyOne(req.params.id, '${modelSingular}')
         .then(rec => {

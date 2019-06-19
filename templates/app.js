@@ -15,7 +15,7 @@ const addRouterModules = routers => {
     return routers
         .map(
             r =>
-                `app.use('/${r}', passport.authenticate('jwt', { session: false }), route${capitalize(
+                `app.use('/${r}', jwtAuth, route${capitalize(
                     r
                 )});`
         )
@@ -67,6 +67,8 @@ app.use(parseForm);
 
 const authRouter = require('./src/routers/auth-route');
 app.use('/auth', authRouter);
+
+const jwtAuth = settings.enableJwtAuthentication ? passport.authenticate('jwt', { session: false }) : (req, res, next) => next();
 
 ${addRouterModules(opts.routersList)}
 

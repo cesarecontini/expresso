@@ -16,13 +16,14 @@ module.exports = {
     up: (queryInterface, Sequelize) => {
         return queryInterface.addColumn(
             '${sourceModelPlural}', 
-            '${targetModelSingular}Id',
+            '${capitalize(targetModelSingular)}Id',
             {
                 type: Sequelize.INTEGER,
                 references: {
                     model: '${targetModelPlural}', 
                     key: 'id',
                 },
+                allowNull: false,
                 onUpdate: 'CASCADE',
                 onDelete: 'CASCADE',
             }
@@ -32,7 +33,7 @@ module.exports = {
     down: (queryInterface, Sequelize) => {
         return queryInterface.removeColumn(
             '${sourceModelPlural}', 
-            '${targetModelSingular}Id'
+            '${capitalize(targetModelSingular)}Id'
         );
     }
 };
@@ -45,13 +46,14 @@ module.exports = {
     up: (queryInterface, Sequelize) => {
         return queryInterface.addColumn(
             '${targetModelPlural}', 
-            '${sourceModelSingular}Id',
+            '${capitalize(sourceModelSingular)}Id',
             {
                 type: Sequelize.INTEGER,
                 references: {
                     model: '${sourceModelPlural}', 
                     key: 'id',
                 },
+                allowNull: false,
                 onUpdate: 'CASCADE',
                 onDelete: 'CASCADE',
             }
@@ -61,7 +63,7 @@ module.exports = {
     down: (queryInterface, Sequelize) => {
         return queryInterface.removeColumn(
             '${targetModelPlural}',
-            '${sourceModelSingular}Id'
+            '${capitalize(sourceModelSingular)}Id'
         );
     }
 };

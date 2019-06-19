@@ -8,6 +8,8 @@ module.exports = opts => {
     jwtIssuer: process.env.JWT_ISSUER,
     jwtAudience: process.env.JWT_AUDIENCE,
 
+    enableJwtAuthentication: true,
+
     recordsPerPage: 50,
     excludedAttributes: ['createdAt', 'updatedAt'],
     excludedUserAttributes: ['createdAt', 'updatedAt', 'token', 'password'],

@@ -42,6 +42,9 @@ module.exports = opts => {
         "seed": "docker exec -it ${
             opts.appName
         }_web_1 ./node_modules/.bin/sequelize db:seed:all",
+        "seed-undo": "docker exec -it ${
+            opts.appName
+        }_web_1 ./node_modules/.bin/sequelize db:seed:undo:all",
         "go-into-container": "docker exec -it ${opts.appName}_web_1 /bin/ash",
         "npminstall-and-start": "yarn install && yarn run debug",
         "init": "docker-compose build && docker-compose up",

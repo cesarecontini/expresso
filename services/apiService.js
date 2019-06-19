@@ -1,36 +1,53 @@
-const validator = require('validator');
+
 const sequelize = require('../db/models');
 const settings = require('../../settings');
 
 const getSequelizeModel = sequelizeModel => sequelize[sequelizeModel];
 const getOffset = (limit, page) => limit * (page - 1);
-const getNumeric = (v, defaultValue) =>
-    v &&
-    validator.isNumeric(v, {
-        no_symbols: false,
-    })
-        ? v
-        : defaultValue;
 
-const findAllAndPaginate = (page, sequelizeModel) => {
+const getNumeric = (v, defaultValue) => {
+    const numericValue = parseInt(v);
+    if(Number.isInteger(numericValue)) {
+        return numericValue;
+    } else {
+        return defaultValue;
+    }
+}
+
+const getAttributes = attributes => attributes ? attributes : {
+    exclude: settings.excludedAttributes,
+};
+
+const getWhere = (where, defaultOpt = {}) => where ? where : defaultOpt;
+
+const findAllAndPaginate = (page, sequelizeModel, attributes, where, sort, include = []) => {
+
+    const attributesOption = getAttributes(attributes);
+    const whereOption = getWhere(where);
+    const sortOption = sort ? sort : {
+        id: 1,
+    };
+
     const limit = settings.recordsPerPage; // number of records per page
     let offset = 0;
+
     return getSequelizeModel(sequelizeModel)
-        .findAndCountAll()
+        .findAndCountAll({
+            attributes: attributesOption,
+            where: whereOption
+        })
         .then(data => {
             const pages = Math.ceil(data.count / limit);
             const offsetValue = getOffset(limit, getNumeric(page, 0));
             offset = offsetValue < 0 ? 0 : offsetValue;
             return getSequelizeModel(sequelizeModel)
                 .findAll({
-                    attributes: {
-                        exclude: settings.excludedAttributes,
-                    },
+                    attributes: attributesOption,
                     limit,
                     offset,
-                    $sort: {
-                        id: 1,
-                    },
+                    where: whereOption,
+                    $sort: sortOption,
+                    include: include
                 })
                 .then(recs => {
                     return {
@@ -42,17 +59,18 @@ const findAllAndPaginate = (page, sequelizeModel) => {
         });
 };
 
-const findOne = (id, sequelizeModel) => {
+const findOne = (id, sequelizeModel, attributes, where, include = []) => {
     return getSequelizeModel(sequelizeModel)
         .findOne({
-            where: {
+            where: getWhere(where, {
                 id: getNumeric(id, 0),
-            },
-            attributes: {
-                exclude: settings.excludedAttributes,
-            },
+            }),
+            include: include,
+            attributes: getAttributes(attributes),
         })
-        .then(rec => rec);
+        .then(rec => {
+            return rec;
+        });
 };
 
 const createOne = (objectToCreate, sequelizeModel) => {
@@ -61,40 +79,52 @@ const createOne = (objectToCreate, sequelizeModel) => {
             reject(new Error('Undefined object'))
         );
     }
+    
     return getSequelizeModel(sequelizeModel)
         .create(objectToCreate)
         .then(rec => rec);
 };
 
-const updateOne = (objectToUpdate, id, sequelizeModel) => {
-    if (!objectToUpdate || !getNumeric(id, null))
+const updateOne = (objectToUpdate, id, sequelizeModel, attributes, where) => {
+
+    if (!objectToUpdate || !id) {
         return new Promise((resolve, reject) =>
             reject(new Error('Undefined object'))
         );
-    // eslint-disable-next-line no-param-reassign
-    delete objectToUpdate.id;
+    }
+
+    const whereOption = getWhere(where, {
+        id: id
+    });
+
     return getSequelizeModel(sequelizeModel)
         .update(objectToUpdate, {
-            where: {
-                id,
-            },
+            where: whereOption,
         })
-        .then(() => findOne(id, sequelizeModel));
+        .then(() => {
+            return findOne(id, sequelizeModel, attributes);
+        });
 };
 
-const destroyOne = (id, sequelizeModel) => {
-    if (!getNumeric(id, null))
+const destroyOne = (id, sequelizeModel, where) => {
+    const numericId = parseInt(id);
+    if (!Number.isInteger(numericId)) {
         return new Promise((resolve, reject) =>
             reject(new Error('Undefined object'))
         );
+    }
+
+    const whereMerged = Object.assign({
+        id: parseInt(numericId)
+    }, where);
+       
     return getSequelizeModel(sequelizeModel).destroy({
-        where: {
-            id,
-        },
+        where: whereMerged
     });
 };
 
 module.exports = {
+    getSequelizeModel,
     findAllAndPaginate,
     findOne,
     createOne,

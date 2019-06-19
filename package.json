@@ -1,6 +1,6 @@
 {
   "name": "expresso-machine",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "expresso-machine is cli app which generates a full express js application, including api endpoints, database/sequelize initial migrations, seeders, modules. It also create a dockerfile and docker-compose adjusted to the database dialect set.",
   "main": "index.js",
   "scripts": {
@@ -28,11 +28,9 @@
     "expresso-machine": "bin/expresso-machine",
     "expresso-machine-add-api-endpoints": "bin/expresso-machine-add-api-endpoints",
     "expresso-machine-add-sq-association": "bin/expresso-machine-add-sq-association",
-    "expresso-machine-add-form-template": "bin/expresso-machine-add-form-template",
     "em": "bin/expresso-machine",
     "em-add-api-endpoints": "bin/expresso-machine-add-api-endpoints",
-    "em-add-sq-association": "bin/expresso-machine-add-sq-association",
-    "em-add-form-template": "bin/expresso-machine-add-form-template"
+    "em-add-sq-association": "bin/expresso-machine-add-sq-association"
   },
   "dependencies": {
     "bcrypt": "^3.0.5",
