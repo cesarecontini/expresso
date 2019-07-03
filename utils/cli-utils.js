@@ -2,6 +2,8 @@ const validator = require('validator');
 const fs = require('fs-extra');
 const moment = require('moment');
 const beautifyHtml = require('js-beautify').html;
+const pluralize = require('pluralize');
+const supertestString = require('../templates/supertest');
 
 const getFormattedDateAsInt = () => Number(moment().format('YYYYMMDDHHmmss'));
 const getBeautifiedHtml = html =>
@@ -57,10 +59,31 @@ const addToNotes = notesArray => {
         });
 };
 
+const addSupertestFiles = prog => {
+    const projectRelativePath = (prog.init) ? `./${prog.init}` : '.';
+    const supertestDir = `${projectRelativePath}/test/routers`;
+    const promisesArray = [];
+    prog.list.forEach(propertyName => {
+        const plural = pluralize.plural(propertyName);
+        const singular = pluralize.singular(propertyName);
+        promisesArray.push(
+            fs.writeFile(
+                `${supertestDir}/route-${singular}.test.js`,
+                supertestString({
+                    routeNamePlural: plural,
+                    routeNameSingular: singular
+                })
+            )
+        );
+    });
+    return Promise.all(promisesArray);
+};
+
 module.exports = {
     list,
     pathExist,
     addToNotes,
     getBeautifiedHtml,
     getFormattedDateAsInt,
+    addSupertestFiles
 };

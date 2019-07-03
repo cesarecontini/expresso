@@ -4,20 +4,17 @@ const requireRouterModules = routers => {
     return routers
         .map(
             r =>
-                `const route${capitalize(
-                    r
-                )} = require('./src/routers/route-${r}');`
+                `const route${capitalize(r)} = require('./src/routers/route-${r}');`
         )
         .join('\n');
 };
 
 const addRouterModules = routers => {
+    const apiBasePath = '${apiBasePath}';
     return routers
         .map(
             r =>
-                `app.use('/${r}', jwtAuth, route${capitalize(
-                    r
-                )});`
+                `app.use(\`${apiBasePath}/${r}\`, jwtAuth, route${capitalize(r)});`
         )
         .join('\n');
 };
@@ -39,7 +36,7 @@ const path = require('path');
 const passportLocalStrategy = require('./src/services/passportStrategiesService');
 
 const settings = require('./settings');
-const { port } = settings;
+const { apiBasePath } = settings;
 
 passportLocalStrategy(passport);
 
@@ -66,7 +63,7 @@ let njk = expressNunjucks(app, {
 app.use(parseForm);
 
 const authRouter = require('./src/routers/auth-route');
-app.use('/auth', authRouter);
+app.use(\`\${apiBasePath}/auth\`, authRouter);
 
 const jwtAuth = settings.enableJwtAuthentication ? passport.authenticate('jwt', { session: false }) : (req, res, next) => next();
 
@@ -75,7 +72,6 @@ ${addRouterModules(opts.routersList)}
 app.get('/', (req, res) => res.render('home', {}));
 app.get('/about', (req, res) => res.render('about', {}));
 
-app.listen(port, () => console.log('Example app listening on port', port));
-
+module.exports = app;
 `;
 };

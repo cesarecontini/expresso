@@ -20,10 +20,11 @@ Expresso-machine is a CLI utility to generate an express js app featuring:
 -   'expresso-machine' (alias 'em') command line interface to generate a brand new application express-app
 -   'expresso-machine-add-api-endpoints' (alias 'em-add-api-endpoints') cli to add extra endpoints to an existing project (api implementation, JWT protection and Sequelize models/migration/seeder files)
 -   'expresso-machine-add-sq-association' CLI (alias 'em-add-sq-association') to create an extra sql association between tables
+-   Generation of a number of jest/supertest files within the created app's /test/routers folder
 
 ### PRE-REQUISITES
 
-As expresso-machine dockerizes the generated expressjs app, it would be beneficial to have the **docker** and **docker-compose** commands installed in your machine. In windows environents when working with bash I suggest using Window's **Power Shell**
+As expresso-machine dockerizes the generated expressjs app, it would be beneficial to have the **docker** and **docker-compose** cli commands installed in your machine. In windows environents when working with bash I suggest using Window's **Power Shell**
 
 ## em-machine CLI ( alias 'em')
 
@@ -229,6 +230,33 @@ And changes will be applied to the DB.
 ## NUNJUCKS TEMPLATES
 
 When **expresso-machine** generates an application it also creates a couple of nunjucks templates in the ./views folder as well as a base template using bootstrap.
+
+## JEST/SUPERTEST AUTOMATICALLY GENERATED TEST FILES
+
+Whenever you create a brand new application by running **expresso-machine** or **em** and subsequently **expresso-machine-add-api-endpoints** or alias **em-add-api-endpoints** a test file for each endpoint domain you created will be generated within the **./test/routers** folder of your app.
+
+For example if you run:
+
+```
+em -i my-app -l product
+```
+A file containing all initial tests for the product endpoint will be generated to **./test/routers/route-product.test.js**
+
+## RUNNING YOUR TESTS
+
+Get into the docker container by running the command
+
+```
+npm run go-into-container
+```
+
+then just run
+
+```
+npm test
+```
+
+All jest/supertests will be run in watch mode and re-run whenever file changes are detected
 
 ## TO DO
 

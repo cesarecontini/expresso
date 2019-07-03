@@ -27,7 +27,7 @@ module.exports = opts => {
     "description": "",
     "main": "index.js",
     "scripts": {
-        "test": "jest",
+        "test": "npx sequelize db:migrate:undo:all && npx sequelize db:migrate && npx sequelize db:seed:all && jest --watchAll --forceExit",
         "test-coverage": "jest --coverage",
         "start": "nodemon -e js,html,css ./index.js",
         "debug": "nodemon --inspect=0.0.0.0:9229 -e js,html,css ./index.js",
@@ -90,7 +90,8 @@ module.exports = opts => {
         "jest": "^24.1.0",
         "nodemon": "^1.18.9",
         "npm-run-all": "^4.1.5",
-        "prettier": "1.16.4"
+        "prettier": "1.16.4",
+        "supertest": "^4.0.2"
     }
 }
     `;

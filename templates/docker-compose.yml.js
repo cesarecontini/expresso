@@ -23,6 +23,7 @@ services:
             JWT_SECRET: jwtsecret
             JWT_ISSUER: some.issuer.com
             JWT_AUDIENCE: mysite.net
+            API_BASE_PATH: /v1
     db:
         image: mysql
         command: --default-authentication-plugin=mysql_native_password
@@ -60,6 +61,7 @@ services:
             JWT_SECRET: jwtsecret
             JWT_ISSUER: some.issuer.com
             JWT_AUDIENCE: mysite.net
+            API_BASE_PATH: /v1
     db:
         image: postgres
         restart: always

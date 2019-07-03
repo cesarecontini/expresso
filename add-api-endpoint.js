@@ -148,10 +148,14 @@ const initProject = prog => {
                 ),
         },
         {
+            title: 'Create api supertest tests',
+            task: () => cliUtils.addSupertestFiles(prog)
+        },
+        {
             title: 'Update main application file',
             task: () => {
                 return fs
-                    .readFile('./index.js')
+                    .readFile('./app.js')
                     .then(file => file.toString().split('\n'))
                     .then(fileBits => {
                         fileBits.splice(
@@ -172,16 +176,16 @@ const initProject = prog => {
                             0,
                             '\n',
                             ...prog.list.map(e => {
-                                return `app.use('/${pluralize.plural(
+                                return `app.use(\`\${apiBasePath}/${pluralize.plural(
                                     e
-                                )}', passport.authenticate('jwt', { session: false }), route${capitalize(
+                                )}\`, jwtAuth, route${capitalize(
                                     pluralize.plural(e)
                                 )});\n`;
                             })
                         );
 
                         return fs.writeFile(
-                            './index.js',
+                            './app.js',
                             fileBits.join('\n').toString()
                         );
                     });

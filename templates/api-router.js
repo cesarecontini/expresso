@@ -15,12 +15,12 @@ const validationSchema = {
         type: String,
         required: true,
         length: {
-            max: 10,
+            max: 100,
         },
         message: {
             type: 'Name must be a string!',
             required: 'Name is a required field',
-            length: 'Name length cannot exceed 10 chars',
+            length: 'Name length cannot exceed 100 chars',
         },
     },
 };

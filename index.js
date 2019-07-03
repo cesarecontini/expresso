@@ -14,6 +14,7 @@ const pathToExpressoMachine = require('global-modules-path').getPath(
 );
 
 const appString = require('./templates/app');
+const appIndexString = require('./templates/app-index');
 const packageJsonString = require('./templates/package.json');
 const apiRouterString = require('./templates/api-router');
 const settingsString = require('./templates/settings');
@@ -111,14 +112,23 @@ const initProject = prog => {
             task: () => fs.mkdir(`${prog.init}/src`),
         },
         {
-            title: 'Create index.js main file',
+            title: 'Create app.js main file',
             task: () => {
                 return fs.writeFile(
-                    `${projectDirName}/index.js`,
+                    `${projectDirName}/app.js`,
                     appString({
                         port: prog.port,
                         routersList: prog.list.map(l => pluralize.plural(l)),
                     })
+                );
+            },
+        },
+        {
+            title: 'Create index.js main file',
+            task: () => {
+                return fs.writeFile(
+                    `${projectDirName}/index.js`,
+                    appIndexString()
                 );
             },
         },
@@ -277,6 +287,10 @@ const initProject = prog => {
                     `${pathToExpressoMachine}/addons/jest/test`,
                     `${projectDirName}/test`
                 ),
+        },
+        {
+            title: 'Create api supertest tests',
+            task: () => cliUtils.addSupertestFiles(prog)
         },
         {
             title: 'Create views folder',

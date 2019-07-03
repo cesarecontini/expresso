@@ -1,6 +1,6 @@
 {
   "name": "expresso-machine",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "expresso-machine is cli app which generates a full express js application, including api endpoints, database/sequelize initial migrations, seeders, modules. It also create a dockerfile and docker-compose adjusted to the database dialect set.",
   "main": "index.js",
   "scripts": {
